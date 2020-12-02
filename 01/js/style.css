@@ -1,0 +1,34 @@
+body {
+  margin: auto;
+  max-width: 800px;
+  padding: 2em;
+  font-family: serif;
+  color: #333;
+  background-color: #fcfcfc;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #d43e53;
+}
+
+hr {
+  color: gray;
+  border: 0.1px gray solid;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.data-area {
+  padding: 2em;
+}
+
+#answers {
+  font-weight: bold;
+}
