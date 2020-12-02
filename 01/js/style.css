@@ -21,12 +21,21 @@ hr {
   border: 0.1px gray solid;
 }
 
+p {
+  text-indent: 2ch;
+}
+
+button {
+  display: block;
+  margin: 1em auto;
+}
+
 .center-text {
   text-align: center;
 }
 
 .data-area {
-  padding: 2em;
+  padding-bottom: 1em;
 }
 
 #answers {

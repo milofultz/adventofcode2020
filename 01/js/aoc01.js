@@ -7,10 +7,12 @@ function addSumsOfGivenNumsToPage() {
     .value.split('\n')
     .map((num) => parseInt(num));
   const [twoAnswer, threeAnswer] = findProductOfNumbersThatSumTo2020(givenNums);
-  const answersSpan = document.getElementById('answers');
+  const answersSpan = document.createElement('span');
+  answersSpan.id = 'answers';
   answersSpan.innerText =
     `Two Numbers Solution: ${twoAnswer}\n` +
     `Three Numbers Solution: ${threeAnswer}`;
+  document.querySelector('.data-area').appendChild(answersSpan);
 }
 
 function findProductOfNumbersThatSumTo2020(numbers) {
