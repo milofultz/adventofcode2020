@@ -20,8 +20,7 @@ def get_number_of_valid_entries(entries):
     valid = 0
     for entry in entries:
         amount, char, password = entry.replace('-', ',').split(' ')
-        pattern = re.compile(char + "{" + amount + "}")
-        if pattern.search(password):
+        if re.search(char + "{" + amount + "}", password):
             valid += 1
     return valid
 
