@@ -3,7 +3,9 @@ PASSWORDS = "aoc02-data"
 
 def main():
     entries = load_data(PASSWORDS).replace(':', '').split('\n')
-    print(get_valid_entries_using_char_count(entries))
+    count_valid, index_valid = get_valid_entries(entries)
+    print(f"Part 1: {count_valid}\n" +
+          f"Part 2: {index_valid}")
 
 
 def load_data(fp):
@@ -12,14 +14,17 @@ def load_data(fp):
     return data
 
 
-def get_valid_entries_using_char_count(entries):
-    valid = 0
+def get_valid_entries(entries):
+    count_valid, index_valid = 0, 0
     for entry in entries:
         amount, char, password = entry.strip().split(' ')
         low, high = amount.split('-')
-        if int(low) <= password.count(char) <= int(high):
-            valid += 1
-    return valid
+        low, high = int(low), int(high)
+        if low <= password.count(char) <= high:
+            count_valid += 1
+        if (password[low-1] == char) ^ (password[high-1] == char):
+            index_valid += 1
+    return count_valid, index_valid
 
 
 if __name__ == "__main__":
