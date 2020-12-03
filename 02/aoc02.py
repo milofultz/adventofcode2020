@@ -4,7 +4,6 @@ import re
 PASSWORDS = "aoc02-data"
 
 
-# Get data
 def load_data(fp):
     with open(fp, 'r') as f:
         data = f.read()
@@ -15,14 +14,10 @@ def check_entries(entries):
     output = 0
     for entry in entries:
         raw_pattern, password = entry.split(': ')
-        amount, char = raw_pattern.split(' ')
+        amount, char = raw_pattern.replace('-', ',').split(' ')
         pattern = re.compile(char + "{" + amount + "}")
         output += 1 if pattern.search(password) else 0
     return output
-  
-
-def is_password_valid(pattern, string):
-    pass
 
 
 # Print all results on page
@@ -31,5 +26,6 @@ def is_password_valid(pattern, string):
 
 
 if __name__ == "__main__":
-    queries = load_data(PASSWORDS).split('\n')
-    print(queries)
+    entries = load_data(PASSWORDS).split('\n')
+    results = check_entries(entries)
+    print(results)
