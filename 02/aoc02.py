@@ -17,7 +17,7 @@ def load_data(fp):
 def get_valid_entries(entries):
     count_valid, index_valid = 0, 0
     for entry in entries:
-        amount, char, password = entry.strip().split(' ')
+        amount, char, password = entry.split(' ')
         low, high = amount.split('-')
         low, high = int(low), int(high)
         if low <= password.count(char) <= high:
