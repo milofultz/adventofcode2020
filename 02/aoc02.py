@@ -4,20 +4,26 @@ import re
 PASSWORDS = "aoc02-data"
 
 
+def main():
+    entries = load_data(PASSWORDS).replace(':', '').split('\n')
+    valid_entries = get_number_of_valid_entries(entries)
+    print(valid_entries)
+
+
 def load_data(fp):
     with open(fp, 'r') as f:
         data = f.read()
     return data
 
 
-def check_entries(entries):
-    output = 0
+def get_number_of_valid_entries(entries):
+    valid = 0
     for entry in entries:
-        raw_pattern, password = entry.split(': ')
-        amount, char = raw_pattern.replace('-', ',').split(' ')
+        amount, char, password = entry.replace('-', ',').split(' ')
         pattern = re.compile(char + "{" + amount + "}")
-        output += 1 if pattern.search(password) else 0
-    return output
+        if pattern.search(password):
+            valid += 1
+    return valid
 
 
 # Print all results on page
@@ -26,6 +32,4 @@ def check_entries(entries):
 
 
 if __name__ == "__main__":
-    entries = load_data(PASSWORDS).split('\n')
-    results = check_entries(entries)
-    print(results)
+    main()
