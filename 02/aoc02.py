@@ -1,6 +1,3 @@
-import re
-
-
 PASSWORDS = "aoc02-data"
 
 
@@ -19,15 +16,11 @@ def load_data(fp):
 def get_number_of_valid_entries(entries):
     valid = 0
     for entry in entries:
-        amount, char, password = entry.replace('-', ',').split(' ')
-        if re.search(char + "{" + amount + "}", password):
+        amount, char, password = entry.strip().split(' ')
+        low, high = amount.split('-')
+        if int(low) <= password.count(char) <= int(high):
             valid += 1
     return valid
-
-
-# Print all results on page
-#   If failed, ❌ in red with why
-#   If correct, ✅ in green with why
 
 
 if __name__ == "__main__":
