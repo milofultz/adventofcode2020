@@ -2,6 +2,12 @@ PUZZLE_INPUT = 'aoc03-data'
 TREE_SYMBOL = '#'
 
 
+def main():
+    toboggan_ride = TobogganRide()
+    toboggan_ride.trajectory = get_trajectory()
+    return toboggan_ride.get_number_of_trees_encountered()
+
+
 class TobogganRide:
     def __init__(self):
         self.terrain = self.create_terrain()
@@ -43,6 +49,4 @@ def get_trajectory() -> dict:
 
 
 if __name__ == "__main__":
-    toboggan_ride = TobogganRide()
-    toboggan_ride.trajectory = get_trajectory()
-    print(toboggan_ride.get_number_of_trees_encountered())
+    print(main())
