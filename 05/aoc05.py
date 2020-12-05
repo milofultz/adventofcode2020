@@ -7,6 +7,13 @@ def get_boarding_passes() -> list:
     return data.split('\n')
 
 
+def get_all_seat_ids(boarding_passes) -> list:
+    seat_ids = []
+    for boarding_pass in boarding_passes:
+        seat_ids.append(get_seat_id(boarding_pass))
+    return seat_ids
+
+
 def get_highest_seat_id(boarding_passes) -> int:
     highest = 0
     for boarding_pass in boarding_passes:
@@ -38,6 +45,16 @@ def get_column(directions):
     return int(column, 2)
 
 
+def get_missing_seat_id(seat_ids):
+    for i in range(min(seat_ids), max(seat_ids)):
+        if i <= 8 or i >= 1016:
+            continue
+        if i not in seat_ids and i + 1 in seat_ids and i - 1 in seat_ids:
+            return i
+    return -1
+
+
 if __name__ == "__main__":
     boarding_passes = get_boarding_passes()
-    print(get_highest_seat_id(boarding_passes))
+    seat_ids = get_all_seat_ids(boarding_passes)
+    print(get_missing_seat_id(seat_ids))
