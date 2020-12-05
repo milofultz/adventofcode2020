@@ -1,3 +1,6 @@
+from field_validation import validation_dict as validate
+
+
 PUZZLE_INPUT = 'aoc04-data'
 
 
@@ -33,15 +36,17 @@ def parse_fields_from_string(line: str) -> dict:
 def get_number_of_valid_passports(passports):
     valid_count = 0
     for passport in passports:
-        if has_required_fields(passport):
+        if has_required_and_valid_fields(passport):
             valid_count += 1
     return valid_count
 
 
-def has_required_fields(obj) -> bool:
+def has_required_and_valid_fields(obj) -> bool:
     required_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
     for key in required_fields:
         if key not in obj.keys():
+            return False
+        if not validate[key](obj.get(key)):
             return False
     return True
 
