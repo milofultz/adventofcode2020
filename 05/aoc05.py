@@ -1,6 +1,13 @@
 PUZZLE_INPUT = 'aoc05-data'
 
 
+def main():
+    boarding_passes = get_boarding_passes()
+    seat_ids = get_all_seat_ids(boarding_passes)
+    print(max(seat_ids))
+    print(get_missing_seat_id(seat_ids))
+
+
 def get_boarding_passes() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
         data = f.read()
@@ -14,47 +21,29 @@ def get_all_seat_ids(boarding_passes) -> list:
     return seat_ids
 
 
-def get_highest_seat_id(boarding_passes) -> int:
-    highest = 0
-    for boarding_pass in boarding_passes:
-        seat_id = get_seat_id(boarding_pass)
-        if seat_id > highest:
-            highest = seat_id
-    return highest
-
-
 def get_seat_id(boarding_pass) -> int:
-    row = get_row(boarding_pass[:7])
-    column = get_column(boarding_pass[-3:])
+    column, row = get_column_and_row(boarding_pass)
     return row * 8 + column
 
 
-def get_row(directions):
-    row_dict = {'F': '0', 'B': '1'}
-    row = ''
-    for step in directions:
-        row += row_dict[step]
-    return int(row, 2)
-
-
-def get_column(directions):
+def get_column_and_row(directions):
     column_dict = {'L': '0', 'R': '1'}
-    column = ''
+    row_dict = {'F': '0', 'B': '1'}
+    column, row = '', ''
     for step in directions:
-        column += column_dict[step]
-    return int(column, 2)
+        if step in column_dict.keys():
+            column += column_dict[step]
+        else:
+            row += row_dict[step]
+    return int(column, 2), int(row, 2)
 
 
 def get_missing_seat_id(seat_ids):
-    for i in range(min(seat_ids), max(seat_ids)):
-        if i <= 8 or i >= 1016:
-            continue
+    for i in range(min(*seat_ids, 9), max(*seat_ids, 1015)):
         if i not in seat_ids and i + 1 in seat_ids and i - 1 in seat_ids:
             return i
     return -1
 
 
 if __name__ == "__main__":
-    boarding_passes = get_boarding_passes()
-    seat_ids = get_all_seat_ids(boarding_passes)
-    print(get_missing_seat_id(seat_ids))
+    main()
