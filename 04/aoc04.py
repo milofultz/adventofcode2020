@@ -9,7 +9,7 @@ def main():
     print(get_number_of_valid_passports(passports))
 
 
-def get_passports():
+def get_passports() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
         data = f.read()
     return parse_passports_from_data(data)
@@ -33,7 +33,7 @@ def parse_fields_from_string(line: str) -> dict:
     return parsed_fields
 
 
-def get_number_of_valid_passports(passports):
+def get_number_of_valid_passports(passports) -> int:
     valid_count = 0
     for passport in passports:
         if has_required_and_valid_fields(passport):
@@ -44,9 +44,7 @@ def get_number_of_valid_passports(passports):
 def has_required_and_valid_fields(obj) -> bool:
     required_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
     for key in required_fields:
-        if key not in obj.keys():
-            return False
-        if not validate[key](obj.get(key)):
+        if key not in obj.keys() or not validate[key](obj.get(key)):
             return False
     return True
 

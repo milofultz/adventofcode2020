@@ -1,37 +1,45 @@
 def byr(data):
-    return True if 1920 <= int(data.strip()) <= 2002 else False
+    if 1920 <= int(data) <= 2002:
+        return True
+    return False
 
 
 def iyr(data):
-    return True if 2010 <= int(data.strip()) <= 2020 else False
+    if 2010 <= int(data) <= 2020:
+        return True
+    return False
 
 
 def eyr(data):
-    return True if 2020 <= int(data.strip()) <= 2030 else False
+    if 2020 <= int(data) <= 2030:
+        return True
+    return False
 
 
 def hgt(data):
-    data = data.strip()
-    if 'cm' in data[-2:] and 150 <= int(data[:-2]) <= 193:
-        return True
-    if 'in' in data[-2:] and 59 <= int(data[:-2]) <= 76:
+    num, measure = int(data[:-2]), data[-2:]
+    if 'cm' in measure and 150 <= num <= 193 or 'in' in measure and 59 <= num <= 76:
         return True
     return False
 
 
 def hcl(data):
-    data = data.strip()
-    return True if len(data) == 7 and data[0] == '#' and data[1:].isalnum() else False
+    if len(data) == 7 and data[0] == '#' and data[1:].isalnum():
+        return True
+    return False
 
 
 def ecl(data):
     valid = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
-    return True if data.strip() in valid else False
+    if data in valid:
+        return True
+    return False
 
 
 def pid(data):
-    data = data.strip()
-    return True if len(data) == 9 and data.isnumeric() else False
+    if len(data) == 9 and data.isnumeric():
+        return True
+    return False
 
 
 validation_dict = {
