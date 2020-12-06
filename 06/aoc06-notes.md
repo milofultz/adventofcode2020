@@ -1,0 +1,5 @@
+- separate by groups
+- get count of each group
+  - make a set and add the answers
+  - return size of set
+- add them together
