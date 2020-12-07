@@ -1,0 +1,14 @@
+- create a lookup table of each bags contents
+    - load data
+    - for each line in data
+        - split at 'bags contain'; result is outer bag and inner bags
+            - remove period from end of inner bags
+            - split inner bags at commas
+            - split each inner bag into quantity and color
+        - add each to bag contains dict 
+- get all bags that can hold a shiny gold bag
+    - for each bag in dict
+    - create temp set of all bag colors
+    - get inner bags and add to set
+    - recursively repeat until all bags are added
+    - if set contains a shiny gold bag, add one
