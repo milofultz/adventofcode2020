@@ -42,17 +42,17 @@ def get_names_of_bags_contained_in(color: str, lookup: dict) -> set:
         return contents
 
 
-def get_all_bags_contained_in(color: str, lookup: dict) -> list:
-    contents = list()
+def get_number_of_bags_inside(color: str, lookup: dict) -> int:
+    contents = 0
     current_bag_contents = lookup.get(color)
     if len(current_bag_contents) is None:
         return contents
     else:
         for bag, quantity in current_bag_contents.items():
-            bags_inside = get_all_bags_contained_in(bag, lookup)
+            bags_inside = get_number_of_bags_inside(bag, lookup)
             for i in range(quantity):
-                contents.append(bag)
-                contents += bags_inside
+                # current bag plus amount of all bags inside
+                contents += 1 + bags_inside
         return contents
 
 
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     bag_contents = get_all_bag_contents()
     print("Bags that eventually contain at least one shiny gold bag: ", end='')
     print(len(get_bags_containing_color('shiny gold', bag_contents)))
-    print("Bags that are required to be inside my one shiny gold bag: ", end='')
-    print(len(get_all_bags_contained_in('shiny gold', bag_contents)))
+    print("Bags that are required to be inside one shiny gold bag: ", end='')
+    print(get_number_of_bags_inside('shiny gold', bag_contents))
