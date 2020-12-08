@@ -1,15 +1,3 @@
-# part 1
-#
-# - Input: instruction type, value
-# - Output: accumulator value
-# - Constraints: None
-# - Edge: None
-#
-#
-# Type:
-# list of dicts; dict holds inst, val int, visited bool
-
-
 PUZZLE_INPUT = 'aoc08-data'
 
 
@@ -27,7 +15,27 @@ def get_instructions():
     return instructions
 
 
+def get_accumulator_on_infinite_loop(instructions: list) -> int:
+    visited_instructions = set()
+    accumulator = 0
+    instruction_index = 0
+    while instruction_index not in visited_instructions:
+        visited_instructions.add(instruction_index)
+        current_instruction = instructions[instruction_index]
+        print(current_instruction['type'])
+        if current_instruction['type'] == 'acc':
+            accumulator += current_instruction['val']
+            instruction_index += 1
+        elif current_instruction['type'] == 'jmp':
+            instruction_index += current_instruction['val']
+        elif current_instruction['type'] == 'nop':
+            instruction_index += 1
+        else:
+            print('ELSE ERROR in loop')
+            instruction_index += 1
+    return accumulator
+
+
 if __name__ == "__main__":
-    # parse data into list of dicts
     instructions = get_instructions()
-    # get accumulator when already visited starting at inst 0
+    print(get_accumulator_on_infinite_loop(instructions))
