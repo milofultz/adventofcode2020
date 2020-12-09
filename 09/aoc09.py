@@ -1,3 +1,6 @@
+from collections import deque
+
+
 PUZZLE_INPUT = 'aoc09-data'
 
 
@@ -34,23 +37,18 @@ def get_encryption_weakness(target: int, numbers: list) -> int:
     return None
 
 
-def get_contiguous_summands_of_target(target: int, summands: list) -> list:
-    if len(summands) < 2:
-        return None
-    for first_number_index, first_number in enumerate(summands):
-        if first_number > target:
-            continue
-        contiguous_sum = first_number
-        contiguous_summands = [first_number]
-        second_number_index = first_number_index + 1
-        for second_number in summands[second_number_index:]:
-            contiguous_sum += second_number
-            contiguous_summands.append(second_number)
-            if contiguous_sum > target:
-                break
-            elif contiguous_sum == target:
-                return contiguous_summands
-    return None
+def get_contiguous_summands_of_target(target: int, summands: list) -> deque:
+    index, contiguous_sum = 0, 0
+    contiguous_summands = deque()
+    while index < len(summands):
+        contiguous_sum = sum(contiguous_summands)
+        if contiguous_sum < target:
+            contiguous_summands.append(summands[index])
+            index += 1
+        elif contiguous_sum > target:
+            contiguous_summands.popleft()
+        else:
+            return contiguous_summands
 
 
 if __name__ == "__main__":
