@@ -17,10 +17,9 @@ def get_first_non_sum_number(numbers: list, size_of_preamble: int) -> int:
             return number
         start += 1
         current_index += 1
-    return None
 
 
-def is_sum_of_numbers_in_preamble(desired_sum, numbers):
+def is_sum_of_numbers_in_preamble(desired_sum: int, numbers: list) -> bool:
     numbers_hash = set()
     for number in numbers:
         if desired_sum - number in numbers_hash:
@@ -34,7 +33,6 @@ def get_encryption_weakness(target: int, numbers: list) -> int:
         result = get_contiguous_summands_of_target(target, numbers[:index])
         if result is not None:
             return min(result) + max(result)
-    return None
 
 
 def get_contiguous_summands_of_target(target: int, summands: list) -> deque:
