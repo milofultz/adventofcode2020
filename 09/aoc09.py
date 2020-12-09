@@ -3,8 +3,8 @@ PUZZLE_INPUT = 'aoc09-data'
 
 def get_port_output() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
-        port_output = f.read().split('\n')
-    return [int(num) for num in port_output]
+        output = f.read().split('\n')
+    return [int(line) for line in output]
 
 
 def get_first_non_sum_number(numbers: list, size_of_components: int) -> int:
@@ -34,13 +34,15 @@ def get_encryption_weakness(target: int, numbers: list) -> int:
 
 
 def get_contiguous_summands_of_target(target: int, summands: list) -> list:
-    first_number_index = 0
-    while first_number_index < len(summands) - 1:
+    first_number_index = len(summands) - 1
+    while first_number_index != 1:
         first_number = summands[first_number_index]
+        if first_number > target:
+            continue
         contiguous_sum = first_number
         contiguous_summands = [first_number]
-        second_number_index = first_number_index + 1
-        while second_number_index < len(summands):
+        second_number_index = first_number_index - 1
+        while second_number_index != 0:
             second_number = summands[second_number_index]
             contiguous_sum += second_number
             contiguous_summands.append(second_number)
@@ -48,13 +50,13 @@ def get_contiguous_summands_of_target(target: int, summands: list) -> list:
                 break
             elif contiguous_sum == target:
                 return contiguous_summands
-            second_number_index += 1
-        first_number_index += 1
+            second_number_index -= 1
+        first_number_index -= 1
     return None
 
 
 if __name__ == "__main__":
     port_output = get_port_output()
-    target = get_first_non_sum_number(port_output, 25)
-    print(target)
-    print(get_encryption_weakness(target, port_output))
+    non_sum_number = get_first_non_sum_number(port_output, 25)
+    print(non_sum_number)
+    print(get_encryption_weakness(non_sum_number, port_output))
