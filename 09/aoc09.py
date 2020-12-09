@@ -1,10 +1,10 @@
 PUZZLE_INPUT = 'aoc09-data'
 
 
-def get_data():
+def get_port_output() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
-        data = f.read().split('\n')
-    return [int(num) for num in data]
+        port_output = f.read().split('\n')
+    return [int(num) for num in port_output]
 
 
 def get_first_non_sum_number(numbers: list, size_of_components: int) -> int:
@@ -34,22 +34,27 @@ def get_encryption_weakness(target: int, numbers: list) -> int:
 
 
 def get_contiguous_summands_of_target(target: int, summands: list) -> list:
-    for start, first_number in enumerate(summands):
-        resulting_summands = [first_number]
-        too_big = False
-        for second_number in summands[start+1:]:
-            if not too_big:
-                resulting_summands.append(second_number)
-                temp_sum = sum(resulting_summands)
-                if temp_sum == target:
-                    return resulting_summands
-                elif temp_sum > target:
-                    too_big = True
+    first_number_index = 0
+    while first_number_index < len(summands) - 1:
+        first_number = summands[first_number_index]
+        contiguous_sum = first_number
+        contiguous_summands = [first_number]
+        second_number_index = first_number_index + 1
+        while second_number_index < len(summands):
+            second_number = summands[second_number_index]
+            contiguous_sum += second_number
+            contiguous_summands.append(second_number)
+            if contiguous_sum > target:
+                break
+            elif contiguous_sum == target:
+                return contiguous_summands
+            second_number_index += 1
+        first_number_index += 1
     return None
 
 
 if __name__ == "__main__":
-    data = get_data()
-    target = get_first_non_sum_number(data, 25)
+    port_output = get_port_output()
+    target = get_first_non_sum_number(port_output, 25)
     print(target)
-    print(get_encryption_weakness(target, data))
+    print(get_encryption_weakness(target, port_output))
