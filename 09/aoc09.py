@@ -18,10 +18,11 @@ def get_first_non_sum_number(numbers: list, size_of_preamble: int) -> int:
 
 
 def is_sum_of_numbers_in_preamble(desired_sum, numbers):
-    for index, first_num in enumerate(numbers):
-        for second_num in numbers[index + 1:]:
-            if first_num + second_num == desired_sum:
-                return True
+    numbers_hash = set()
+    for number in numbers:
+        if desired_sum - number in numbers_hash:
+            return True
+        numbers_hash.add(number)
     return False
 
 
