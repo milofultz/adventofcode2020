@@ -51,9 +51,6 @@ def get_accumulator_and_completion_type(instructions: list) -> dict:
             current_index += current_instruction['val']
         elif current_instruction['type'] == 'nop':
             current_index += 1
-        else:
-            print('ELSE ERROR in loop')
-            current_index += 1
         if current_index == instructions_length:
             return {'accumulator': accumulator, 'end_type': 'complete'}
     return {'accumulator': accumulator, 'end_type': 'loop'}
