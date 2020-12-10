@@ -10,14 +10,14 @@ def get_adapter_list():
 def get_adapter_differences(adapters: list) -> dict:
     sorted_adapters = sorted(adapters)
     differences = {
-        '1': 0,
-        '2': 0,
-        '3': 1
+        1: 0,
+        2: 0,
+        3: 1
     }
     last_adapter = 0
     for adapter in sorted_adapters:
         difference = adapter - last_adapter
-        differences[str(difference)] += 1
+        differences[difference] += 1
         last_adapter = adapter
     return differences
 
@@ -25,4 +25,4 @@ def get_adapter_differences(adapters: list) -> dict:
 if __name__ == "__main__":
     adapter_list = get_adapter_list()
     difference_dict = get_adapter_differences(adapter_list)
-    print(difference_dict['1'] * difference_dict['3'])
+    print(difference_dict[1] * difference_dict[3])
