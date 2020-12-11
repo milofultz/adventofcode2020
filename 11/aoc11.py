@@ -5,21 +5,16 @@ PUZZLE_INPUT = 'aoc11-data'
 EMPTY = 'L'
 OCCUPIED = '#'
 FLOOR = '.'
-# - set a dict of visible_directions to search
-#     - N, NE, E, SE, S, SW, W, NW
-#     - N: {x: 0, y: 1}
-#     - SE: {x: 1, y: -1}
-#     - etc.
-DIRECTIONS = {
-    'N' : {'x': 0, 'y': -1},
-    'NE': {'x': 1, 'y': -1},
-    'E' : {'x': 1, 'y': 0},
-    'SE': {'x': 1, 'y': 1},
-    'S' : {'x': 0, 'y': 1},
-    'SW': {'x': -1, 'y': 1},
-    'W' : {'x': -1, 'y': 0},
-    'NW': {'x': -1, 'y': -1}
-}
+DIRECTIONS = [
+    {'x': 0, 'y': -1},  # N
+    {'x': 1, 'y': -1},  # NE
+    {'x': 1, 'y': 0},   # E
+    {'x': 1, 'y': 1},   # SE
+    {'x': 0, 'y': 1},   # S
+    {'x': -1, 'y': 1},  # SW
+    {'x': -1, 'y': 0},  # W
+    {'x': -1, 'y': -1}  # NW
+]
 
 
 
@@ -179,7 +174,7 @@ def get_settled_layout_from_a_distance(layout: list) -> list:
 # OUT: Boolean
 def can_be_occupied_from_a_distance(layout: list, x: int, y: int) -> bool:
     # - for direction in visible_directions
-    for _, direction in DIRECTIONS.items():
+    for direction in DIRECTIONS:
     #     - set x and y to given coords
     #     - add direction[x] to x
     #     - add direction[y] to y
@@ -207,7 +202,7 @@ def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
     # - set counter to 0
     visible_occupied_seats = 0
     # - for direction in visible_directions
-    for _, direction in DIRECTIONS.items():
+    for direction in DIRECTIONS:
     #     - set x and y to given coords
     #     - add direction[x] to x
     #     - add direction[y] to y
