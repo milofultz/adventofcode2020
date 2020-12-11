@@ -5,6 +5,23 @@ PUZZLE_INPUT = 'aoc11-data'
 EMPTY = 'L'
 OCCUPIED = '#'
 FLOOR = '.'
+# - set a dict of visible_directions to search
+#     - N, NE, E, SE, S, SW, W, NW
+#     - N: {x: 0, y: 1}
+#     - SE: {x: 1, y: -1}
+#     - etc.
+DIRECTIONS = {
+    'N' : {'x': 0, 'y': -1},
+    'NE': {'x': 1, 'y': -1},
+    'E' : {'x': 1, 'y': 0},
+    'SE': {'x': 1, 'y': 1},
+    'S' : {'x': 0, 'y': 1},
+    'SW': {'x': -1, 'y': 1},
+    'W' : {'x': -1, 'y': 0},
+    'NW': {'x': -1, 'y': -1}
+}
+
+
 
 # ## Parser
 #
@@ -58,11 +75,11 @@ def get_settled_layout(layout: list) -> list:
     #         - for each seat in row
             for col_number, seat in enumerate(row):
     #             - if empty and can be occupied (func)
-                if seat == EMPTY and can_be_occupied(last_layout, col_number, row_number):
+                if seat == EMPTY and can_be_occupied_adjacent(last_layout, col_number, row_number):
     #                 - set to occupied
                     working_layout[row_number][col_number] = OCCUPIED
     #             - if occupied and can be emptied (func)
-                if seat == OCCUPIED and can_be_emptied(last_layout, col_number, row_number):
+                if seat == OCCUPIED and can_be_emptied_adjacent(last_layout, col_number, row_number):
     #                 - set to empty
                     working_layout[row_number][col_number] = EMPTY
     # - return modified copy of seat list
@@ -70,7 +87,7 @@ def get_settled_layout(layout: list) -> list:
 
 
 # - If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-def can_be_occupied(layout: list, x: int, y: int) -> bool:
+def can_be_occupied_adjacent(layout: list, x: int, y: int) -> bool:
     x_range = y_range = [-1, 0, 1]
     if y == 0:
         y_range = [0, 1]
@@ -90,7 +107,7 @@ def can_be_occupied(layout: list, x: int, y: int) -> bool:
 
 
 # - If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-def can_be_emptied(layout: list, x: int, y: int) -> bool:
+def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
     adjacent_occupied_seats = 0
     x_range = y_range = [-1, 0, 1]
     if y == 0:
@@ -131,7 +148,94 @@ def get_occupied_seats(layout: list) -> int:
     return occupied_seats
 
 
+def get_settled_layout_from_a_distance(layout: list) -> list:
+    # - make deep copy of seat list to work with
+    working_layout = copy.deepcopy(layout)
+    # - initial state is None
+    last_layout = None
+    # - while initial state is not equal to seat list
+    # layout_num = 0
+    while last_layout != working_layout:
+    #     - initial state is deep copy of seat list
+        last_layout = copy.deepcopy(working_layout)
+    #     - For row in seats
+        for row_number, row in enumerate(last_layout):
+    #         - for each seat in row
+            for col_number, seat in enumerate(row):
+    #             - if empty and can be occupied (func)
+                if seat == EMPTY and can_be_occupied_from_a_distance(last_layout, col_number, row_number):
+    #                 - set to occupied
+                    working_layout[row_number][col_number] = OCCUPIED
+    #             - if occupied and can be emptied (func)
+                if seat == OCCUPIED and can_be_emptied_from_a_distance(last_layout, col_number, row_number):
+    #                 - set to empty
+                    working_layout[row_number][col_number] = EMPTY
+    # - return modified copy of seat list
+    return working_layout
+
+
+# FUNC: Can be occupied from a distance
+# IN: Seat list, X, Y
+# OUT: Boolean
+def can_be_occupied_from_a_distance(layout: list, x: int, y: int) -> bool:
+    # - for direction in visible_directions
+    for _, direction in DIRECTIONS.items():
+    #     - set x and y to given coords
+    #     - add direction[x] to x
+    #     - add direction[y] to y
+        x_sight, y_sight = x + direction['x'], y + direction['y']
+    #     - while 0 < x < length of row
+    #       and 0 < y < length of seat list:
+        while (0 <= x_sight < len(layout[0]) and
+               0 <= y_sight < len(layout)):
+    #         - if x,y is occupied
+            visible_square = layout[y_sight][x_sight]
+            if visible_square == OCCUPIED:
+    #             - return False
+                return False
+            elif visible_square == EMPTY:
+                break
+            x_sight, y_sight = x_sight + direction['x'], y_sight + direction['y']
+    # - return True
+    return True
+
+
+# FUNC: Can be emptied from a distance
+# IN: Seat list, X (int), Y (int), tolerance (int)
+# OUT: Boolean
+def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
+    # - set counter to 0
+    visible_occupied_seats = 0
+    # - for direction in visible_directions
+    for _, direction in DIRECTIONS.items():
+    #     - set x and y to given coords
+    #     - add direction[x] to x
+    #     - add direction[y] to y
+        x_sight, y_sight = x + direction['x'], y + direction['y']
+    #     - while 0 < x < length of row
+    #       and 0 < y < length of seat list:
+        while (0 <= x_sight < len(layout[0]) and
+               0 <= y_sight < len(layout)):
+    #         - if x,y is occupied
+            visible_square = layout[y_sight][x_sight]
+            if visible_square == OCCUPIED:
+    #             - add 1 to counter
+                visible_occupied_seats += 1
+    #             - if counter >= tolerance
+                if visible_occupied_seats >= 5:
+    #                 - return True
+                    return True
+                break
+            if visible_square == EMPTY:
+                break
+            x_sight, y_sight = x_sight + direction['x'], y_sight + direction['y']
+    # - return False
+    return False
+
+
 if __name__ == "__main__":
     seat_layout = get_seat_layout()
     settled_layout = get_settled_layout(seat_layout)
     print(get_occupied_seats(settled_layout))
+    settled_layout_from_a_distance = get_settled_layout_from_a_distance(seat_layout)
+    print(get_occupied_seats(settled_layout_from_a_distance))
