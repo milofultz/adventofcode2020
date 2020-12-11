@@ -54,8 +54,8 @@ def can_be_occupied_adjacent(layout: list, x: int, y: int) -> bool:
 
 def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
     """ Return True if four+ seats adjacent to coordinates are occupied """
-    adjacent_occupied_seats = 0
     x_range, y_range = make_x_y_ranges(x, y, layout)
+    adjacent_occupied_seats = 0
     for y_offset in y_range:
         for x_offset in x_range:
             if y_offset == 0 and x_offset == 0:
@@ -118,14 +118,15 @@ def can_be_occupied_from_a_distance(layout: list, x: int, y: int) -> bool:
     """ Return True if no seats visible via directions are occupied """
     for direction in DIRECTIONS:
         x_sight, y_sight = x + direction['x'], y + direction['y']
-        while (0 <= x_sight < len(layout[0]) and
-               0 <= y_sight < len(layout)):
+        width, height = len(layout[0]), len(layout)
+        while 0 <= x_sight < width and 0 <= y_sight < height:
             visible_square = layout[y_sight][x_sight]
             if visible_square == OCCUPIED:
                 return False
             elif visible_square == EMPTY:
                 break
-            x_sight, y_sight = x_sight + direction['x'], y_sight + direction['y']
+            x_sight += direction['x']
+            y_sight += direction['y']
     return True
 
 
@@ -134,8 +135,8 @@ def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
     visible_occupied_seats = 0
     for direction in DIRECTIONS:
         x_sight, y_sight = x + direction['x'], y + direction['y']
-        while (0 <= x_sight < len(layout[0]) and
-               0 <= y_sight < len(layout)):
+        width, height = len(layout[0]), len(layout)
+        while 0 <= x_sight < width and 0 <= y_sight < height:
             visible_square = layout[y_sight][x_sight]
             if visible_square == OCCUPIED:
                 visible_occupied_seats += 1
@@ -144,7 +145,8 @@ def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
                 break
             if visible_square == EMPTY:
                 break
-            x_sight, y_sight = x_sight + direction['x'], y_sight + direction['y']
+            x_sight += direction['x']
+            y_sight += direction['y']
     return False
 
 
