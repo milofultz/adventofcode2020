@@ -29,27 +29,14 @@ def get_settled_layout(layout: list) -> list:
         last_layout = copy.deepcopy(working_layout)
         for row_number, row in enumerate(last_layout):
             for col_number, seat in enumerate(row):
-                if seat == EMPTY and can_be_occupied_adjacent(last_layout, col_number, row_number):
+                if seat == EMPTY and get_adjacent_occupied_seats(last_layout, col_number, row_number) == 0:
                     working_layout[row_number][col_number] = OCCUPIED
-                if seat == OCCUPIED and can_be_emptied_adjacent(last_layout, col_number, row_number):
+                if seat == OCCUPIED and get_adjacent_occupied_seats(last_layout, col_number, row_number) >= 4:
                     working_layout[row_number][col_number] = EMPTY
     return working_layout
 
 
-def can_be_occupied_adjacent(layout: list, x: int, y: int) -> bool:
-    """ Return True if no occupied seats are adjacent to it """
-    x_range, y_range = make_x_y_ranges(x, y, layout)
-    for y_offset in y_range:
-        for x_offset in x_range:
-            if y_offset == 0 and x_offset == 0:
-                continue
-            if layout[y + y_offset][x + x_offset] == OCCUPIED:
-                return False
-    return True
-
-
-def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
-    """ Return True if four+ seats adjacent to coordinates are occupied """
+def get_adjacent_occupied_seats(layout: list, x: int, y: int) -> int:
     x_range, y_range = make_x_y_ranges(x, y, layout)
     adjacent_occupied_seats = 0
     for y_offset in y_range:
@@ -58,9 +45,7 @@ def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
                 continue
             if layout[y + y_offset][x + x_offset] == OCCUPIED:
                 adjacent_occupied_seats += 1
-                if adjacent_occupied_seats >= 4:
-                    return True
-    return False
+    return adjacent_occupied_seats
 
 
 def make_x_y_ranges(x, y, layout):
@@ -92,31 +77,14 @@ def get_settled_layout_from_a_distance(layout: list) -> list:
         last_layout = copy.deepcopy(working_layout)
         for row_number, row in enumerate(last_layout):
             for col_number, seat in enumerate(row):
-                if seat == EMPTY and can_be_occupied_from_a_distance(last_layout, col_number, row_number):
+                if seat == EMPTY and get_visible_occupied_seats(last_layout, col_number, row_number) == 0:
                     working_layout[row_number][col_number] = OCCUPIED
-                if seat == OCCUPIED and can_be_emptied_from_a_distance(last_layout, col_number, row_number):
+                if seat == OCCUPIED and get_visible_occupied_seats(last_layout, col_number, row_number) >= 5:
                     working_layout[row_number][col_number] = EMPTY
     return working_layout
 
 
-def can_be_occupied_from_a_distance(layout: list, x: int, y: int) -> bool:
-    """ Return True if no seats visible via directions are occupied """
-    for direction in DIRECTIONS:
-        x_sight, y_sight = x + direction['x'], y + direction['y']
-        width, height = len(layout[0]), len(layout)
-        while 0 <= x_sight < width and 0 <= y_sight < height:
-            visible_square = layout[y_sight][x_sight]
-            if visible_square == OCCUPIED:
-                return False
-            elif visible_square == EMPTY:
-                break
-            x_sight += direction['x']
-            y_sight += direction['y']
-    return True
-
-
-def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
-    """ Return True if five or more seats visible via directions are occupied """
+def get_visible_occupied_seats(layout: list, x: int, y: int) -> int:
     visible_occupied_seats = 0
     for direction in DIRECTIONS:
         x_sight, y_sight = x + direction['x'], y + direction['y']
@@ -125,14 +93,12 @@ def can_be_emptied_from_a_distance(layout: list, x: int, y: int) -> bool:
             visible_square = layout[y_sight][x_sight]
             if visible_square == OCCUPIED:
                 visible_occupied_seats += 1
-                if visible_occupied_seats >= 5:
-                    return True
                 break
             if visible_square == EMPTY:
                 break
             x_sight += direction['x']
             y_sight += direction['y']
-    return False
+    return visible_occupied_seats
 
 
 if __name__ == "__main__":
