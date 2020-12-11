@@ -54,10 +54,10 @@ def make_x_y_ranges(x, y, layout):
     return x_range, y_range
 
 
-def make_range(value, max):
+def make_range(value, maximum):
     if value == 0:
         return [0, 1]
-    elif value == max:
+    elif value == maximum:
         return [-1, 0]
     else:
         return [-1, 0, 1]
