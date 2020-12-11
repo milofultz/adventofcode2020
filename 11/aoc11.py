@@ -81,9 +81,7 @@ def make_range(value, max):
 def get_occupied_seats(layout: list) -> int:
     occupied_seats = 0
     for row in layout:
-        for seat in row:
-            if seat == OCCUPIED:
-                occupied_seats += 1
+        occupied_seats += row.count(OCCUPIED)
     return occupied_seats
 
 
