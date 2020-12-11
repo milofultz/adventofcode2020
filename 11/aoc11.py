@@ -46,21 +46,6 @@ def get_adjacent_occupied_seats(layout: list, x: int, y: int) -> int:
     return adjacent_occupied_seats
 
 
-def make_x_y_ranges(x, y, layout):
-    y_range = make_range(y, len(layout) - 1)
-    x_range = make_range(x, len(layout[0]) - 1)
-    return x_range, y_range
-
-
-def make_range(value, maximum):
-    if value == 0:
-        return [0, 1]
-    elif value == maximum:
-        return [-1, 0]
-    else:
-        return [-1, 0, 1]
-
-
 def get_occupied_seats(layout: list) -> int:
     occupied_seats = 0
     for row in layout:
