@@ -49,3 +49,48 @@ OUT: Occupied seats (int)
         - if seat is occupied
             - counter += 1
 - return counter 
+
+
+FUNC: Can be occupied from a distance
+IN: Seat list, X, Y
+OUT: Boolean
+
+- set a dict of visible_directions to search
+    - N, NE, E, SE, S, SW, W, NW
+    - N: {x: 0, y: 1}
+    - SE: {x: 1, y: -1}
+    - etc. 
+- for direction in visible_directions
+    - set x and y to given coords
+    - add direction[x] to x 
+    - add direction[y] to y
+    - while 0 < x < length of row
+      and 0 < y < length of seat list:
+        - if x,y is occupied
+            - return False
+- return True
+        
+     
+
+
+FUNC: Can be emptied from a distance
+IN: Seat list, X (int), Y (int), tolerance (int)
+OUT: Boolean
+
+- set a dict of visible_directions to search
+    - N, NE, E, SE, S, SW, W, NW
+    - N: {x: 0, y: 1}
+    - SE: {x: 1, y: -1}
+    - etc. 
+- set counter to 0
+- for direction in visible_directions
+    - set x and y to given coords
+    - add direction[x] to x 
+    - add direction[y] to y
+    - while 0 < x < length of row
+      and 0 < y < length of seat list:
+        - if x,y is occupied
+            - add 1 to counter
+            - if counter >= tolerance
+                - return True
+- return False
