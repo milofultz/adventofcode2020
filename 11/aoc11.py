@@ -4,7 +4,6 @@ import copy
 PUZZLE_INPUT = 'aoc11-data'
 EMPTY = 'L'
 OCCUPIED = '#'
-FLOOR = '.'
 DIRECTIONS = [
     {'x': 0, 'y': -1},  # N
     {'x': 1, 'y': -1},  # NE
@@ -20,10 +19,7 @@ DIRECTIONS = [
 def get_seat_layout() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
         data = f.read().split('\n')
-    output = []
-    for line in data:
-        output.append(list(line))
-    return output
+    return [list(line) for line in data]
 
 
 def get_settled_layout(layout: list) -> list:
@@ -68,24 +64,15 @@ def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
 
 
 def make_x_y_ranges(x, y, layout):
-    y_range = make_y_range(y, len(layout) - 1)
-    x_range = make_x_range(x, len(layout[0]) - 1)
+    y_range = make_range(y, len(layout) - 1)
+    x_range = make_range(x, len(layout[0]) - 1)
     return x_range, y_range
 
 
-def make_y_range(y, max_y):
-    if y == 0:
+def make_range(value, max):
+    if value == 0:
         return [0, 1]
-    elif y == max_y:
-        return [-1, 0]
-    else:
-        return [-1, 0, 1]
-
-
-def make_x_range(x, max_x):
-    if x == 0:
-        return [0, 1]
-    elif x == max_x:
+    elif value == max:
         return [-1, 0]
     else:
         return [-1, 0, 1]
