@@ -37,14 +37,12 @@ def get_settled_layout(layout: list) -> list:
 
 
 def get_adjacent_occupied_seats(layout: list, x: int, y: int) -> int:
-    x_range, y_range = make_x_y_ranges(x, y, layout)
+    width, height = len(layout[0]), len(layout)
     adjacent_occupied_seats = 0
-    for y_offset in y_range:
-        for x_offset in x_range:
-            if y_offset == 0 and x_offset == 0:
-                continue
-            if layout[y + y_offset][x + x_offset] == OCCUPIED:
-                adjacent_occupied_seats += 1
+    for direction in DIRECTIONS:
+        adjacent_x, adjacent_y = x + direction['x'], y + direction['y']
+        if 0 <= adjacent_x < width and 0 <= adjacent_y < height and layout[adjacent_y][adjacent_x] == OCCUPIED:
+            adjacent_occupied_seats += 1
     return adjacent_occupied_seats
 
 
@@ -85,10 +83,10 @@ def get_settled_layout_from_a_distance(layout: list) -> list:
 
 
 def get_visible_occupied_seats(layout: list, x: int, y: int) -> int:
+    width, height = len(layout[0]), len(layout)
     visible_occupied_seats = 0
     for direction in DIRECTIONS:
         x_sight, y_sight = x + direction['x'], y + direction['y']
-        width, height = len(layout[0]), len(layout)
         while 0 <= x_sight < width and 0 <= y_sight < height:
             visible_square = layout[y_sight][x_sight]
             if visible_square == OCCUPIED:
