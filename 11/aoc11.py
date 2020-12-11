@@ -17,7 +17,7 @@ DIRECTIONS = [
 ]
 
 
-def get_seat_layout() -> list:  # list of lists
+def get_seat_layout() -> list:
     with open(PUZZLE_INPUT, 'r') as f:
         data = f.read().split('\n')
     output = []
@@ -42,15 +42,7 @@ def get_settled_layout(layout: list) -> list:
 
 def can_be_occupied_adjacent(layout: list, x: int, y: int) -> bool:
     """ Return True if no occupied seats are adjacent to it """
-    x_range = y_range = [-1, 0, 1]
-    if y == 0:
-        y_range = [0, 1]
-    if x == 0:
-        x_range = [0, 1]
-    if y + 1 == len(layout):
-        y_range = [-1, 0]
-    if x + 1 == len(layout[0]):
-        x_range = [-1, 0]
+    x_range, y_range = make_x_y_ranges(x, y, layout)
     for y_offset in y_range:
         for x_offset in x_range:
             if y_offset == 0 and x_offset == 0:
@@ -63,15 +55,7 @@ def can_be_occupied_adjacent(layout: list, x: int, y: int) -> bool:
 def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
     """ Return True if four+ seats adjacent to coordinates are occupied """
     adjacent_occupied_seats = 0
-    x_range = y_range = [-1, 0, 1]
-    if y == 0:
-        y_range = [0, 1]
-    if x == 0:
-        x_range = [0, 1]
-    if y + 1 == len(layout):
-        y_range = [-1, 0]
-    if x + 1 == len(layout[0]):
-        x_range = [-1, 0]
+    x_range, y_range = make_x_y_ranges(x, y, layout)
     for y_offset in y_range:
         for x_offset in x_range:
             if y_offset == 0 and x_offset == 0:
@@ -81,6 +65,30 @@ def can_be_emptied_adjacent(layout: list, x: int, y: int) -> bool:
                 if adjacent_occupied_seats >= 4:
                     return True
     return False
+
+
+def make_x_y_ranges(x, y, layout):
+    y_range = make_y_range(y, len(layout) - 1)
+    x_range = make_x_range(x, len(layout[0]) - 1)
+    return x_range, y_range
+
+
+def make_y_range(y, max_y):
+    if y == 0:
+        return [0, 1]
+    elif y == max_y:
+        return [-1, 0]
+    else:
+        return [-1, 0, 1]
+
+
+def make_x_range(x, max_x):
+    if x == 0:
+        return [0, 1]
+    elif x == max_x:
+        return [-1, 0]
+    else:
+        return [-1, 0, 1]
 
 
 def get_occupied_seats(layout: list) -> int:
