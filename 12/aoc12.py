@@ -14,6 +14,19 @@ def get_commands():
     return output
 
 
+def get_end_coordinates(commands: list, ship_data: dict) -> tuple:
+    for command in commands:
+        ship_data = get_resulting_ship_data_from_command(command, ship_data)
+    return ship_data["coordinates"]
+
+
+def get_resulting_ship_data_from_command(command: dict, ship_data: dict) -> dict:
+    return ship_data
+
+
 if __name__ == "__main__":
     commands = get_commands()
-    print(commands)
+    ship_data = {"coordinates": (0, 0),  # starts at center
+                 "direction": 270}       # starts East
+    end_coordinates = get_end_coordinates(commands, ship_data)
+    print(end_coordinates)

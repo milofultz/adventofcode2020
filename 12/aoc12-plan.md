@@ -6,6 +6,8 @@
 
 ## Information:
 
+The ship starts by facing east.
+
 * Arbitrary Movements
     * Action N means to move north by the given value.
     * Action S means to move south by the given value.
@@ -23,3 +25,10 @@ Manhattan distance is the sum of the absolute value of start and end points (X,Y
 
 IN: directions as {CodeNum} split up by line (string)
 OUT: Manhattan distance between start and end point (float)
+
+Commands: List of Commands; Dict of operation and value
+Ship position: Dict of data (current direction in degrees [int], current coord [float])
+
+1. Parse input to list of commands (list of dicts)
+1. Find end point of ship based on start data (coord, direction) and commands
+1. Calculate Manhattan distance from start to end
