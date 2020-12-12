@@ -63,8 +63,7 @@ def get_end_coordinates_with_waypoint(commands: list, ship_coordinates: tuple) -
             ship_coordinates = get_ship_coordinates_after_command_via_waypoint(
                 command["value"], ship_coordinates, waypoint_coordinates)
         else:
-            waypoint_coordinates = get_waypoint_position_from_command(
-                command, ship_coordinates, waypoint_coordinates)
+            waypoint_coordinates = get_waypoint_coordinates_from_command(command, waypoint_coordinates)
     return ship_coordinates
 
 
@@ -75,16 +74,21 @@ def get_ship_coordinates_after_command_via_waypoint(
     return ship_coordinates[0] + x_to_travel, ship_coordinates[1] + y_to_travel
 
 
-def get_waypoint_position_from_command(command: dict, ship_coordinates: tuple, waypoint_coordinates: tuple) -> tuple:
+def get_waypoint_coordinates_from_command(command: dict, waypoint_coordinates: tuple) -> tuple:
+    if command["operation"] in ["N", "S", "E", "W"]:
+        return get_moved_waypoint_coordinates(waypoint_coordinates, command)
+    else:  # L, R
+        return get_rotated_waypoint_coordinates(command, waypoint_coordinates)
+
+
+def get_moved_waypoint_coordinates(waypoint_coordinates: tuple, command: dict) -> tuple:
     direction = command["operation"]
     if direction in ["N", "S"]:
         new_y = waypoint_coordinates[1] + CARDINAL_POLARITY[direction] * command["value"]
         return waypoint_coordinates[0], new_y
-    elif direction in ["E", "W"]:
+    else:  # E, W
         new_x = waypoint_coordinates[0] + CARDINAL_POLARITY[direction] * command["value"]
         return new_x, waypoint_coordinates[1]
-    else:  # L/R
-        return get_rotated_waypoint_coordinates(command, waypoint_coordinates)
 
 
 def get_rotated_waypoint_coordinates(command: dict, waypoint_coordinates: tuple) -> tuple:
@@ -92,11 +96,11 @@ def get_rotated_waypoint_coordinates(command: dict, waypoint_coordinates: tuple)
         turns = command["value"] // 90
     else:
         turns = 360 - command["value"] // 90
-    new_x, new_y = waypoint_coordinates
+    current_x, current_y = waypoint_coordinates
     for turn in range(turns):
-        old_x, old_y = new_x, new_y
-        new_x, new_y = -old_y, old_x
-    return new_x, new_y
+        old_x, old_y = current_x, current_y
+        current_x, current_y = -old_y, old_x
+    return current_x, current_y
 
 
 if __name__ == "__main__":
