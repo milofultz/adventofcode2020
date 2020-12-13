@@ -10,6 +10,29 @@ def get_ids():
     return bus_ids
 
 
+def get_timestamp_of_departing_buses(bus_ids: list) -> int:
+    # largest = max(bus for bus in bus_ids if type(bus) == int)
+    # largest_offset = bus_ids.index(largest)
+    first = bus_ids[0]
+    multiple = 1
+    found = False
+    while not found:
+        found = True
+        # target = multiple * largest
+        target = multiple * first
+        for index, num in enumerate(bus_ids):
+            # print(target, num, index)
+            # if num == largest or num == "x":
+            if num == first or num == "x":
+                continue
+            elif (target + index) % num != 0:
+                found = False
+                break
+        multiple += 1
+    return target
+
+
 if __name__ == "__main__":
     bus_ids = get_ids()
-    print(bus_ids)
+    # print(bus_ids)
+    print(get_timestamp_of_departing_buses(bus_ids))
