@@ -3,7 +3,7 @@ PUZZLE_INPUT_SMALL = "aoc13-data-small"
 
 
 def get_ids():
-    with open(PUZZLE_INPUT_SMALL, "r") as f:
+    with open(PUZZLE_INPUT, "r") as f:
         bus_ids = f.read().strip().split("\n")[1].split(",")
     for index, bus_id in enumerate(bus_ids):
         bus_ids[index] = int(bus_id) if bus_id.isnumeric() else bus_id
@@ -13,7 +13,7 @@ def get_ids():
 def get_timestamp_of_departing_buses(bus_ids: list) -> int:
     largest = max(bus for bus in bus_ids if type(bus) == int)
     largest_offset = bus_ids.index(largest)
-    multiple = 1
+    multiple = 206_336_857_562  # highest number so far
     found = False
     while not found:
         found = True
@@ -26,6 +26,8 @@ def get_timestamp_of_departing_buses(bus_ids: list) -> int:
             elif (target + offset) % num != 0:
                 found = False
                 break
+            if index >= 25:
+                print(f"Found match of {index + 1} numbers: {target}")
         multiple += 1
     return target
 
