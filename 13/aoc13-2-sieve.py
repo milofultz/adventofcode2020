@@ -1,3 +1,9 @@
+"""
+Got this answer from Gravitar64's post on Reddit.
+https://www.reddit.com/r/adventofcode/comments/kc4njx/comment/gfqeouq
+"""
+
+
 PUZZLE_INPUT = "aoc13-data"
 PUZZLE_INPUT_SMALL = "aoc13-data-small"
 
