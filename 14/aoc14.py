@@ -7,7 +7,7 @@ P_IN_S = "aoc14-data-small"
 
 def parse_data():
     # open data file
-    with open(P_IN_S, 'r') as f:
+    with open(P_IN, 'r') as f:
         # make list of contents
         data = f.read().split('\n')
     memory_pattern = re.compile(r'(?<=mem\[)\d+(?=\])')
@@ -24,38 +24,48 @@ def parse_data():
             # set mask to everything past "mask = "
             mask = line[7:]
             # * create new dict with key as mask and dict as value
-            bitmask_dict = {mask: dict()}
+            bitmask_dict = {'mask': mask, 'data': dict()}
         else:
             # * set key to number between '[' and ']'
             memory_address = memory_pattern.search(line).group()
             # * set value to number after ' = '
             value = value_pattern.search(line).group()
-            bitmask_dict[mask] = {memory_address: value}
+            bitmask_dict['data'][int(memory_address)] = int(value)
     output.append(bitmask_dict)
     return output
 
 
-def part1(masks: list) -> None:
-    pass
+def get_sum_of_all_masked_values(mask_groups: list) -> None:
+    #   IN: dict of mask and key:values for each
+    #   OUT: int, sum of all masked values
+    # * create masked values dict
+    masked_values = dict()
+    # * for each new bitmask in list
+    for mask in mask_groups:
+        # * for each memory location and value in the bitmask dict
+        for loc, value in mask['data'].items():
+            # * convert the value to binary string
+            bin_value = bin(value)[2:].zfill(36)
+            # * for each char in both the mask and the binary string:
+            for index in range(36):
+                # * if the mask char is a 0, change that binary char to a 0
+                if mask['mask'][index] == '0':
+                    bin_value = bin_value[:index] + '0' + bin_value[index + 1:]
+                # * if the mask char is an 1, change that binary char to a 1
+                elif mask['mask'][index] == '1':
+                    bin_value = bin_value[:index] + '1' + bin_value[index + 1:]
+            # * add that int of string to the memory location of the masked values dict
+            masked_values[loc] = int(bin_value, 2)
+    # * create sum of 0
+    sum = 0
+    # * for each key in masked values
+    for loc in masked_values:
+        # * add value to sum
+        sum += masked_values[loc]
+    # * return sum
+    return sum
 
 
 if __name__ == "__main__":
-    bitmasks_with_mem_and_values = parse_data()
-    print(bitmasks_with_mem_and_values)
-    # get sum of all masked values
-    #   IN: dict of mask and key:values for each
-    #   OUT: int, sum of all masked values
-    #     * create masked values dict
-    #     * for each new bitmask in list
-    #         * for each memory location and value in the bitmask dict
-    #             * convert the value to binary string
-    #             * for each char in both the mask and the binary string:
-    #                 * if the mask char is a 0, change that binary char to a 0
-    #                 * if the mask char is an 1, change that binary char to a 1
-    #                 * else, continue
-    #             * get int of that string
-    #             * add that int to the memory location of the masked values dict
-    #     * create sum of 0
-    #     * for each key in masked values
-    #         * add value to sum
-    #     * return sum
+    masks = parse_data()
+    print(get_sum_of_all_masked_values(masks))
