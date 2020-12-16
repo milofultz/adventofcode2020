@@ -1,3 +1,6 @@
+Turns out this is just the Van Eck Sequence: https://www.rosettacode.org/wiki/Van_Eck_sequence
+
+
 # Problem
 
 Given your starting numbers, what will be the 2020th number spoken?
