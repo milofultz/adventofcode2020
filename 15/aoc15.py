@@ -7,19 +7,19 @@ def get_number_at_turn(final_turn: int, starting_numbers: list) -> int:
     last_seen = dict()
     turn_counter = 0
     for number in starting_numbers:
-        print(f"Starting: {number}")
+        # print(f"Starting: {number}")
         last_seen[number] = {"last": turn_counter, "first": -1}
         turn_counter += 1
     previous_number = starting_numbers[-1]
     while turn_counter < final_turn:
         if last_seen[previous_number]["first"] == -1:
-            print(f"Seen once: {previous_number}; New number: 0")
+            # print(f"Seen once: {previous_number}; New number: 0")
             last_seen[0]["first"], last_seen[0]["last"] = (
                 last_seen[0]["last"], turn_counter)
             previous_number = 0
         else:
             current_number = last_seen[previous_number]["last"] - last_seen[previous_number]["first"]
-            print(f"Seen: {previous_number}; New number: {current_number}")
+            # print(f"Seen: {previous_number}; New number: {current_number}")
             if not last_seen.get(current_number):
                 last_seen[current_number] = {"last": turn_counter, "first": -1}
             else:
@@ -33,3 +33,4 @@ def get_number_at_turn(final_turn: int, starting_numbers: list) -> int:
 if __name__ == "__main__":
     starting_numbers = [int(num) for num in P_IN.split(",")]
     print(get_number_at_turn(2020, starting_numbers))
+    print(get_number_at_turn(30000000, starting_numbers))
