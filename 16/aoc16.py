@@ -1,5 +1,6 @@
 IN = "aoc16-data"
 INS = "aoc16-data-small"
+INS2 = "aoc16-data-small2"
 
 
 def parse_input():
@@ -33,13 +34,20 @@ def parse_ticket_data(raw_data: str):
     return parsed_ticket_data
 
 
-def get_invalid_nearby_ticket_numbers(fields: dict, nearby_tickets: list) -> int:
+def get_invalid_sum_and_valid_tickets(fields: dict, nearby_tickets: list) -> tuple:
     invalid_sum = 0
+    valid_tickets = []
     accepted_numbers = get_accepted_numbers(fields)
     for ticket in nearby_tickets:
+        valid = True
         for number in ticket:
-            invalid_sum += number if number not in accepted_numbers else 0
-    return invalid_sum
+            if number not in accepted_numbers:
+                invalid_sum += number
+                valid = False
+        if valid:
+            valid_tickets.append(ticket)
+    return invalid_sum, valid_tickets
+
 
 
 def get_accepted_numbers(fields: dict):
@@ -53,5 +61,4 @@ def get_accepted_numbers(fields: dict):
 
 if __name__ == "__main__":
     fields, my_ticket, nearby_tickets = parse_input()
-    # print(fields, my_ticket, nearby_tickets)
-    print(get_invalid_nearby_ticket_numbers(fields, nearby_tickets))
+    invalid_sum, valid_tickets = get_invalid_sum_and_valid_tickets(fields, nearby_tickets)
