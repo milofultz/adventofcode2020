@@ -1,3 +1,6 @@
+import copy
+
+
 IN = "aoc16-data"
 INS = "aoc16-data-small"
 INS2 = "aoc16-data-small2"
@@ -57,6 +60,52 @@ def get_accepted_numbers(fields: dict):
     return all_numbers
 
 
+def get_field_order(fields: dict, valid_tickets: list) -> list:
+    # - create a suspected_field list of lists, one for each index of the ticket containing every field name
+    all_fields = list(fields.keys())
+    suspected_fields = [copy.deepcopy(all_fields) for _ in all_fields]
+    # - for each ticket
+    for ticket in valid_tickets:
+        #- for each index and number in the ticket
+        for index, number in enumerate(ticket):
+            #- for each field
+            for field in all_fields:
+                #- if the number is not in the range
+                if number not in fields[field] and field in suspected_fields[index]:
+                    #- remove it from the suspected sublist for that index
+                    suspected_fields[index].remove(field)
+    # remove assured fields from other indexes
+    return simplify_fields(suspected_fields)
+
+
+def simplify_fields(fields: list) -> list:
+    fields = copy.deepcopy(fields)
+    found_fields = set()
+    simplified = False
+    while not simplified:
+        simplified = True
+        for field in fields:
+            if len(field) == 1:
+                found_fields.add(field[0])
+            else:
+                simplified = False
+                for subfield in field:
+                    if subfield in found_fields:
+                        field.remove(subfield)
+    return sum(fields, [])
+
+
+
 if __name__ == "__main__":
     fields, my_ticket, nearby_tickets = parse_input()
     invalid_sum, valid_tickets = get_invalid_sum_and_valid_tickets(fields, nearby_tickets)
+    print(invalid_sum)
+    field_order = get_field_order(fields, valid_tickets)
+    departure_mult = 1
+    for field, number in zip(field_order, my_ticket[0]):
+        print(field, number)
+        if "departure" in field:
+            departure_mult = number * departure_mult
+    print(departure_mult)
+    # print(field_order)
+    # print(my_ticket)

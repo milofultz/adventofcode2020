@@ -34,3 +34,17 @@ Ticket is CSV, all are the same
     - for each number in ticket
         - if number not in range list, add number to sum
 - return sum
+
+### Determine order of fields
+
+* IN: fields, dict of name:numbers
+      tickets, list of lists of nums
+* OUT: names of fields, ordered list
+
+- create a suspected_field list of lists, one for each index of the ticket containing every field name
+- for each ticket
+    - for each index and number in the ticket
+        - for each field
+            - if the number is not in the range
+                - remove it from the suspected sublist for that index
+- return suspect list
