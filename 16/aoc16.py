@@ -18,11 +18,12 @@ def parse_fields_data(raw_data: str):
     raw_fields = raw_data.split('\n')
     for raw_field in raw_fields:
         field_name, value_ranges = raw_field.split(': ')
-        parsed_fields[field_name] = list()
+        parsed_fields[field_name] = set()
         value_ranges = value_ranges.split(" or ")
         for value_range in value_ranges:
-            low_high = tuple(int(value) for value in value_range.split("-"))
-            parsed_fields[field_name].append(low_high)
+            low, high = tuple(int(value) for value in value_range.split("-"))
+            numbers = [num for num in range(low, high + 1)]
+            parsed_fields[field_name].update(numbers)
     return parsed_fields
 
 
@@ -50,12 +51,10 @@ def get_invalid_sum_and_valid_tickets(fields: dict, nearby_tickets: list) -> tup
 
 
 def get_accepted_numbers(fields: dict):
-    numbers = set()
-    for _, ranges in fields.items():
-        for number_range in ranges:
-            lo, hi = number_range
-            numbers.update([num for num in range(lo, hi + 1)])
-    return numbers
+    all_numbers = set()
+    for _, numbers in fields.items():
+        all_numbers.update(numbers)
+    return all_numbers
 
 
 if __name__ == "__main__":
