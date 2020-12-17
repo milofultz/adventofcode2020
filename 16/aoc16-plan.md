@@ -21,3 +21,16 @@ Ticket is CSV, all are the same
 - Get fields by looking from top until 2 consecutive newlines
   - split by ": ", get header and value range
   - split value range into tuple of (low, high)
+
+### Test tickets and get invalid nums
+
+- create sum variable
+- get all field ranges into one list
+- create valid number list from ranges
+    - create output set
+    - for each range
+        - output.update([num for num in range(low, high+1)])
+- for each ticket in nearby tickets
+    - for each number in ticket
+        - if number not in range list, add number to sum
+- return sum

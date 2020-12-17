@@ -3,7 +3,7 @@ INS = "aoc16-data-small"
 
 
 def parse_input():
-    with open(INS, 'r') as f:
+    with open(IN, 'r') as f:
         data = f.read()
     split_data = data.rsplit('\n\n')
     fields = parse_fields_data(split_data[0])
@@ -33,6 +33,27 @@ def parse_ticket_data(raw_data: str):
     return parsed_ticket_data
 
 
+def get_invalid_nearby_ticket_numbers(fields: dict, nearby_tickets: list) -> int:
+    # - create sum variable
+    sum = 0
+    # - get all field ranges into one list
+    all_ranges = set()
+    for _, ranges in fields.items():
+        for number_range in ranges:
+            lo, hi = number_range
+            all_ranges.update([num for num in range(lo, hi + 1)])
+    #- for each ticket in nearby tickets
+    for ticket in nearby_tickets:
+        #- for each number in ticket
+        for number in ticket:
+            #- if number not in range list, add number to sum
+            if number not in all_ranges:
+                sum += number
+    #- return sum
+    return sum
+
+
 if __name__ == "__main__":
     fields, my_ticket, nearby_tickets = parse_input()
     # print(fields, my_ticket, nearby_tickets)
+    print(get_invalid_nearby_ticket_numbers(fields, nearby_tickets))
