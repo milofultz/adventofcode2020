@@ -49,7 +49,6 @@ def get_invalid_sum_and_valid_tickets(fields: dict, nearby_tickets: list) -> tup
     return invalid_sum, valid_tickets
 
 
-
 def get_accepted_numbers(fields: dict):
     numbers = set()
     for _, ranges in fields.items():
