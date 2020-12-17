@@ -6,10 +6,10 @@ def parse_input():
     with open(IN, 'r') as f:
         data = f.read()
     split_data = data.rsplit('\n\n')
-    fields = parse_fields_data(split_data[0])
-    my_ticket = parse_ticket_data(split_data[1])
-    nearby_tickets = parse_ticket_data(split_data[2])
-    return fields, my_ticket, nearby_tickets
+    fields_data = parse_fields_data(split_data[0])
+    my_ticket_data = parse_ticket_data(split_data[1])
+    nearby_ticket_data = parse_ticket_data(split_data[2])
+    return fields_data, my_ticket_data, nearby_ticket_data
 
 
 def parse_fields_data(raw_data: str):
@@ -34,23 +34,21 @@ def parse_ticket_data(raw_data: str):
 
 
 def get_invalid_nearby_ticket_numbers(fields: dict, nearby_tickets: list) -> int:
-    # - create sum variable
-    sum = 0
-    # - get all field ranges into one list
-    all_ranges = set()
+    invalid_sum = 0
+    accepted_numbers = get_accepted_numbers(fields)
+    for ticket in nearby_tickets:
+        for number in ticket:
+            invalid_sum += number if number not in accepted_numbers else 0
+    return invalid_sum
+
+
+def get_accepted_numbers(fields: dict):
+    numbers = set()
     for _, ranges in fields.items():
         for number_range in ranges:
             lo, hi = number_range
-            all_ranges.update([num for num in range(lo, hi + 1)])
-    #- for each ticket in nearby tickets
-    for ticket in nearby_tickets:
-        #- for each number in ticket
-        for number in ticket:
-            #- if number not in range list, add number to sum
-            if number not in all_ranges:
-                sum += number
-    #- return sum
-    return sum
+            numbers.update([num for num in range(lo, hi + 1)])
+    return numbers
 
 
 if __name__ == "__main__":
