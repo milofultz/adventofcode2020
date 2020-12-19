@@ -38,6 +38,7 @@
             - Set element to inactive in 'working' at index
         - elif element is inactive AND active neighbors is 3
             - set element to active in 'working' at index
+    - expand array to fit next turn's active()
     - set 'working' array to result
 - return result
 
@@ -63,3 +64,26 @@
 - make search array from input array (search_area = input[x_range, y_range, z_range])
 
 - return number of active in search area (np.count_nonzero(condition))
+
+### Expand array to fit next turn
+
+    IN: 3D array
+    OUT: 3D array
+
+- Make deepcopy of input array 'working'
+- for z, get max
+- for y, get max
+- for x, get max
+- if there are any active cubes on face (0) of z axis
+    - add a layer full of inactive to face of z axis on 'working'
+- if there are any active cubes on back (max) of z axis
+    - add a layer full of inactive to back of z axis on 'working'
+- if there are any active cubes on face (0) of y axis
+    - add a layer full of inactive to face of y axis on 'working'
+- if there are any active cubes on back (max) of y axis
+    - add a layer full of inactive to back of y axis on 'working'
+- if there are any active cubes on face (0) of x axis
+    - add a layer full of inactive to face of x axis on 'working'
+- if there are any active cubes on back (max) of x axis
+    - add a layer full of inactive to back of x axis on 'working'
+- return 'working'
