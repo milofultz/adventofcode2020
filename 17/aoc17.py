@@ -129,4 +129,5 @@ if __name__ == "__main__":
     initial_config = make_array_from_input()
     # print(initial_config)
     # result = play_game(initial_config, 6)
-    print(expand_array_to_fit(initial_config))
+    # print(get_active_neighbors((0,7,6), initial_config))
+    # print(expand_array_to_fit(initial_config))
