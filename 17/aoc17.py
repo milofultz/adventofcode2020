@@ -31,12 +31,10 @@ def play_game(init_dimension: np.array, turns: int) -> np.array:
             active_neighbors = get_active_neighbors(index, result_dimension)
             # - if element is active AND active neighbors is less than 2 OR active neighbors is greater than 3
             if element == ACTIVE and active_neighbors not in [2, 3]:
-                print(f"{element} to Inactive at {index}")
                 # - Set element to inactive in 'working' at index
                 working_dimension[index] = INACTIVE
             # - elif element is inactive AND active neighbors is 3
             elif element == INACTIVE and active_neighbors == 3:
-                print(f"{element} to Active at {index}")
                 # - set element to active in 'working' at index
                 working_dimension[index] = ACTIVE
         # - expand array to fit next turn's active()
@@ -131,10 +129,6 @@ def expand_array_to_fit(array: np.array) -> np.array:
 
 
 if __name__ == "__main__":
-    # initial_config = make_array_from_input(P_IN)
-    # result = play_game(initial_config, 6)
-    initial_config = make_array_from_input(P_INS)
-    result = play_game(initial_config, 1)
+    initial_config = make_array_from_input(P_IN)
+    result = play_game(initial_config, 6)
     print(np.count_nonzero(result == ACTIVE))
-    # print(get_active_neighbors((0,7,6), initial_config))
-    # print(expand_array_to_fit(initial_config))
