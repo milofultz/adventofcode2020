@@ -3,13 +3,14 @@ import numpy as np
 
 
 P_IN = 'aoc17-data'
+P_INS = 'aoc17-data-small'
 ACTIVE = '#'
 INACTIVE = '.'
 
 
-def make_array_from_input():
+def make_array_from_input(fp: str):
     # Open file
-    with open(P_IN, 'r') as f:
+    with open(fp, 'r') as f:
         # Put data split by newline into variable
         raw_array = f.read().split('\n')
     # Make array containing an array containing another array for each line in the data
@@ -22,18 +23,20 @@ def play_game(init_dimension: np.array, turns: int) -> np.array:
     # - for each turn in X turns
     for turn in range(turns):
         # - create deepcopy of result array as 'working'
+        result_dimension = expand_array_to_fit(result_dimension)
         working_dimension = copy.deepcopy(result_dimension)
-        working_dimension = expand_array_to_fit(working_dimension)
         # - for each index and element in 3d array
         for index, element in np.ndenumerate(result_dimension):
             # - get number of active neighbors(index, result)
             active_neighbors = get_active_neighbors(index, result_dimension)
             # - if element is active AND active neighbors is less than 2 OR active neighbors is greater than 3
             if element == ACTIVE and active_neighbors not in [2, 3]:
+                print(f"{element} to Inactive at {index}")
                 # - Set element to inactive in 'working' at index
                 working_dimension[index] = INACTIVE
             # - elif element is inactive AND active neighbors is 3
             elif element == INACTIVE and active_neighbors == 3:
+                print(f"{element} to Active at {index}")
                 # - set element to active in 'working' at index
                 working_dimension[index] = ACTIVE
         # - expand array to fit next turn's active()
@@ -72,9 +75,11 @@ def get_active_neighbors(index: tuple, array: np.array) -> int:
 
     # - make search array from input array (search_area = input[x_range, y_range, z_range])
     search_array = array[z_low:z_high, y_low:y_high, x_low:x_high]
-
     # - return number of active in search area (np.count_nonzero(condition))
-    return np.count_nonzero(search_array == ACTIVE)
+    # don't count self in count
+    total = np.count_nonzero(search_array == ACTIVE)
+    return total if array[index] != ACTIVE else total - 1
+
 
 
 def expand_array_to_fit(array: np.array) -> np.array:
@@ -126,8 +131,10 @@ def expand_array_to_fit(array: np.array) -> np.array:
 
 
 if __name__ == "__main__":
-    initial_config = make_array_from_input()
-    # print(initial_config)
+    # initial_config = make_array_from_input(P_IN)
     # result = play_game(initial_config, 6)
+    initial_config = make_array_from_input(P_INS)
+    result = play_game(initial_config, 1)
+    print(np.count_nonzero(result == ACTIVE))
     # print(get_active_neighbors((0,7,6), initial_config))
     # print(expand_array_to_fit(initial_config))
