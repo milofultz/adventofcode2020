@@ -13,18 +13,19 @@ def get_adapter_list():
     return adapter_list
 
 
-def get_adapter_differences(adapters: list) -> dict:
+def get_adapter_differences_and_variations(adapters: list) -> (dict, int):
     differences = defaultdict(int)
+    variations = defaultdict(int, {0: 1})
     last_adapter = 0
     for adapter in adapters:
         differences[adapter - last_adapter] += 1
+        variations[adapter] = variations[adapter - 1] + variations[adapter - 2] + variations[adapter - 3]
         last_adapter = adapter
-    return differences
+    return differences, variations
 
 
 if __name__ == "__main__":
     adapter_list = get_adapter_list()
-    # Part 1
-    difference_dict = get_adapter_differences(adapter_list)
+    difference_dict, variations = get_adapter_differences_and_variations(adapter_list)
     print(difference_dict[1] * difference_dict[3])
-    # Part 2
+    print(variations[adapter_list[-1]])
