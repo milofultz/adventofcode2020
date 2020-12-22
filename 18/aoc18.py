@@ -47,18 +47,21 @@ def parse_equation(raw_eq: str) -> list:
     return equation
 
 
-def sum_all_equations(equations: list) -> int:
-    total = 0
+def sum_all_equations(equations: list) -> tuple:
+    total_no_precedence = 0
+    total_add_precedence = 0
     for equation in equations:
-        total += sum_equation(equation)
-    return total
+        total_no_precedence += sum_equation_no_precedence(equation)
+        total_add_precedence += sum_equation_add_precedence(equation)
+    return total_no_precedence, total_add_precedence
 
 
-def sum_equation(eq: list) -> int:
+def sum_equation_no_precedence(eq: list) -> int:
+    eq = copy.deepcopy(eq)
     while any(isinstance(element, list) for element in eq):
         for index, element in enumerate(eq):
             if type(element) == list:
-                eq[index] = sum_equation(element)
+                eq[index] = sum_equation_no_precedence(element)
                 break
 
     result = eq[0]
@@ -68,6 +71,29 @@ def sum_equation(eq: list) -> int:
             result += eq[index + 1]
         else:  # "*"
             result *= eq[index + 1]
+        index += 2
+    return result
+
+
+def sum_equation_add_precedence(eq: list) -> int:
+    eq = copy.deepcopy(eq)
+    while any(isinstance(element, list) for element in eq):
+        for index, element in enumerate(eq):
+            if type(element) == list:
+                eq[index] = sum_equation_add_precedence(element)
+                break
+
+    while any(element == "+" for element in eq):
+        for index, element in enumerate(eq):
+            if element == "+":
+                eq[index-1] = eq[index - 1] + eq[index + 1]
+                del eq[index: index + 2]
+                break
+
+    result = eq[0]
+    index = 1
+    while index < len(eq):
+        result *= eq[index + 1]
         index += 2
     return result
 
