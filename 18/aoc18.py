@@ -23,12 +23,11 @@ def parse_equation(raw_eq):
             equation.append(int(number))
             equation.append(raw_eq[index])
             number = ""
-        elif raw_eq[index] == "(":
+        else:
             sub_eq = ""
             parentheses_count = 1
             index += 1
             while parentheses_count != 0:
-                print(raw_eq[index])
                 if raw_eq[index] == "(":
                     parentheses_count += 1
                 elif raw_eq[index] == ")":
