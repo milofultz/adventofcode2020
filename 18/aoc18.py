@@ -12,7 +12,7 @@ def get_equations(fp):
     return output
 
 
-def parse_equation(raw_eq):
+def parse_equation(raw_eq: str) -> list:
     equation = []
     number = ""
     index = 0
@@ -36,10 +36,23 @@ def parse_equation(raw_eq):
                 index += 1
             equation.append(parse_equation(sub_eq))
         index += 1
-    equation.append(number)
+    if number != "":
+        equation.append(number)
     return equation
+
+
+def sum_all_equations(equations: list) -> int:
+    total = 0
+    for equation in equations:
+        total += sum_equation(equation)
+    return total
+
+
+def sum_equation(eq: list) -> int:
+    return 1
 
 
 if __name__ == "__main__":
     equations = get_equations(P_INS2)
-    print(equations)
+    # print(equations)
+    print(sum_all_equations(equations))
