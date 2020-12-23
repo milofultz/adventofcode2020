@@ -84,11 +84,9 @@ def sum_equation_add_precedence(eq: list) -> int:
                 break
 
     while any(element == "+" for element in eq):
-        for index, element in enumerate(eq):
-            if element == "+":
-                eq[index-1] = eq[index - 1] + eq[index + 1]
-                del eq[index: index + 2]
-                break
+        index = eq.index("+")
+        eq[index-1] = eq[index - 1] + eq[index + 1]
+        del eq[index:index + 2]
 
     result = eq[0]
     index = 1
