@@ -48,6 +48,18 @@ def get_outputs(rule_number: str, rules: dict) -> set:
     return outputs
 
 
+def number_of_valid_messages(messages, valid):
+    # * create total = 0
+    total = 0
+    # * for each message in messages
+    for message in messages:
+        # * total += 1 if message in valid set else 0
+        total += 1 if message in valid else 0
+    # * return total
+    return total
+
+
 if __name__ == "__main__":
-    rules, messages = parse_data(P_INS)
+    rules, messages = parse_data(P_IN)
     valid = get_outputs("0", rules)
+    print(number_of_valid_messages(messages, valid))
