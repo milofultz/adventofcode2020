@@ -1,4 +1,5 @@
 import copy
+from typing import Callable
 
 
 P_IN = "aoc18-data"
@@ -56,14 +57,17 @@ def sum_all_equations(equations: list) -> tuple:
     return total_no_precedence, total_add_precedence
 
 
-def sum_equation_no_precedence(eq: list) -> int:
-    eq = copy.deepcopy(eq)
-    while any(isinstance(element, list) for element in eq):
-        for index, element in enumerate(eq):
-            if type(element) == list:
-                eq[index] = sum_equation_no_precedence(element)
-                break
+def flatten_equation(nested_eq: list, callback: Callable[[list], int]) -> list:
+    flattened_eq = copy.deepcopy(nested_eq)
+    for index, element in enumerate(flattened_eq):
+        if type(element) == list:
+            flattened_eq[index] = callback(element)
+    return flattened_eq
 
+
+def sum_equation_no_precedence(eq: list) -> int:
+    while any(isinstance(element, list) for element in eq):
+        eq = flatten_equation(eq, sum_equation_no_precedence)
     result = eq[0]
     index = 1
     while index < len(eq):
@@ -76,18 +80,12 @@ def sum_equation_no_precedence(eq: list) -> int:
 
 
 def sum_equation_add_precedence(eq: list) -> int:
-    eq = copy.deepcopy(eq)
     while any(isinstance(element, list) for element in eq):
-        for index, element in enumerate(eq):
-            if type(element) == list:
-                eq[index] = sum_equation_add_precedence(element)
-                break
-
-    while any(element == "+" for element in eq):
+        eq = flatten_equation(eq, sum_equation_add_precedence)
+    while "+" in eq:
         index = eq.index("+")
-        eq[index-1] = eq[index - 1] + eq[index + 1]
+        eq[index - 1] = eq[index - 1] + eq[index + 1]
         del eq[index:index + 2]
-
     result = eq[0]
     index = 1
     while index < len(eq):
