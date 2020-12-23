@@ -1,4 +1,4 @@
-# Problem
+# Part 1: Problem
 
 Determine the number of messages that completely match rule 0.
 
@@ -88,3 +88,38 @@ OUT: number of valid messages, int
 * for each message in messages
     * total += 1 if message in valid set else 0
 * return total
+
+# Part 2: Problem
+
+When changing the rules, we have added infinite loops. If you have these additional loops, how may valid messages are there?
+
+## Plan:
+
+First thought is to just create special cases for these changes.
+
+    8: 42 | 42 8
+    11: 42 31 | 42 11 31
+
+So looking at this totally isolated, we could change the way this is written. FOr 8:
+
+    8: 42 | 42 8
+
+Which is technically the same as
+
+    8: 42 | 42 (42)
+
+Which can reduce down to 
+
+    8: 42*x
+
+Meaning that wherever 8 is, we could reliably just replace the 8's with X amount of 42's, based upon total length necessary. Similarly for 11:
+
+    11: 42 31 | 42 11 31
+    11: 42 31 | 42 (42 31) 31
+    11: 42*x 31*x
+
+Where the same amount of 42's show up as 31's.
+
+So we can check to see if the rule contains its own number. At the beginning, if we get the length of the longest possible message, we can just return X amount until the length exceeds that maximum.
+
+Because this is recursive, I think we would need to ensure that we don't repeat this exact scenario over and over, so there should be a separate function that will gather enough of the outputs of the recursive rule until it exceeds the max length, and then return it and add it, just like you would normally.

@@ -3,6 +3,8 @@ import copy
 
 P_IN = "aoc19-data"
 P_INS = "aoc19-data-small"
+P_IN2 = "aoc19-data-p2"
+P_IN2S = "aoc19-data-p2-small"
 
 
 def parse_data(fp) -> (dict, list):
@@ -42,6 +44,11 @@ def number_of_valid_messages(messages, valid):
 
 
 if __name__ == "__main__":
+    # Part 1
     rules, messages = parse_data(P_IN)
+    valid = get_outputs("0", rules)
+    print(number_of_valid_messages(messages, valid))
+    # Part 2
+    rules, messages = parse_data(P_INM)
     valid = get_outputs("0", rules)
     print(number_of_valid_messages(messages, valid))
