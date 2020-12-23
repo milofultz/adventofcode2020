@@ -10,52 +10,34 @@ def parse_data(fp) -> (dict, list):
         raw_rules, raw_messages = f.read().split('\n\n')
     rules_dict = dict()
     for rule in raw_rules.split('\n'):
-        order, nums = rule.split(": ")
-        rules_dict[order] = [group.replace("\"", "").split(' ')
-                             for group in nums.split(" | ")]
+        rule_number, rule_groups = rule.split(": ")
+        rules_dict[rule_number] = [group.replace("\"", "").split(' ')
+                                   for group in rule_groups.split(" | ")]
     return rules_dict, raw_messages.split('\n')
 
 
 def get_outputs(rule_number: str, rules: dict) -> set:
-    # * create valid set
     outputs = set()
-    # * for rule group in group
     for rule_group in rules[rule_number]:
-        # * create output array with empty string inside
         output = [""]
-        # * for rule in rule group
         for rule in rule_group:
-            # * if rule is "a" or "b"
             if rule in ["a", "b"]:
-                # * make output array = element + ("a" or "b") for each element in output
                 output = [element + rule for element in output]
-            # * else
             else:
-                # * set result to func(rules[rule])
                 result = get_outputs(rule, rules)
-                # * create temporary array
                 temp = list()
-                # * for element in output array
                 for element in output:
-                    # * for addition in result
                     for addition in result:
-                        # * add element + addition to temporary array
                         temp.append(element + addition)
                 output = copy.deepcopy(temp)
-        # * add all of output array to valid set
         outputs.update(output)
-    # * return valid set
     return outputs
 
 
 def number_of_valid_messages(messages, valid):
-    # * create total = 0
     total = 0
-    # * for each message in messages
     for message in messages:
-        # * total += 1 if message in valid set else 0
         total += 1 if message in valid else 0
-    # * return total
     return total
 
 
