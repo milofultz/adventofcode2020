@@ -1,6 +1,3 @@
-import copy
-
-
 P_IN = "aoc19-data"
 P_INS = "aoc19-data-small"
 P_IN2 = "aoc19-data-p2"
@@ -20,18 +17,19 @@ def parse_data(fp) -> (dict, list):
 
 def get_outputs(rule_number: str, rules: dict) -> set:
     outputs = set()
+    # if rule number in its own rule groups (flattened)
     for rule_group in rules[rule_number]:
-        output = [""]
+        output = {""}
         for rule in rule_group:
             if rule in ["a", "b"]:
-                output = [element + rule for element in output]
+                output = {element + rule for element in output}
             else:
                 result = get_outputs(rule, rules)
-                temp = list()
+                temp = set()
                 for element in output:
                     for addition in result:
-                        temp.append(element + addition)
-                output = copy.deepcopy(temp)
+                        temp.add(element + addition)
+                output = temp
         outputs.update(output)
     return outputs
 
@@ -46,9 +44,5 @@ def number_of_valid_messages(messages, valid):
 if __name__ == "__main__":
     # Part 1
     rules, messages = parse_data(P_IN)
-    valid = get_outputs("0", rules)
-    print(number_of_valid_messages(messages, valid))
-    # Part 2
-    rules, messages = parse_data(P_INM)
     valid = get_outputs("0", rules)
     print(number_of_valid_messages(messages, valid))
