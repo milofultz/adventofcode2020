@@ -9,13 +9,17 @@ def parse_data(fp) -> (dict, list):
         raw_rules, raw_messages = f.read().split('\n\n')
     rules_dict = dict()
     for rule in raw_rules.split('\n'):
-        rule_number, rule_groups = rule.split(": ")
-        rules_dict[rule_number] = [group.replace("\"", "").split(' ')
-                                   for group in rule_groups.split(" | ")]
+        rule_number, rule_groups = rule.replace("\"", "").split(": ")
+        rule_number = int(rule_number)
+        if rule_groups in "ab":
+            rules_dict[rule_number] = rule_groups
+        else:
+            rules_dict[rule_number] = [[int(num) for num in group.split(' ')]
+                                       for group in rule_groups.split(" | ")]
     return rules_dict, raw_messages.split('\n')
 
 
-def get_outputs(rule_number: str, rules: dict, cache: dict) -> set:
+def get_outputs(rule_number: int, rules: dict, cache: dict) -> set:
     if rule_number in cache:
         return cache[rule_number]
     outputs = set()
@@ -46,5 +50,5 @@ def number_of_valid_messages(messages, valid):
 if __name__ == "__main__":
     # Part 1
     rules, messages = parse_data(P_IN)
-    valid = get_outputs("0", rules, dict())
+    valid = get_outputs(0, rules, dict())
     print(number_of_valid_messages(messages, valid))
