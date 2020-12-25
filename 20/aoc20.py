@@ -36,9 +36,11 @@ def get_corners_and_edges(tileset: dict) -> (list, list):
             edge_lookup[edge[::-1]].append(tile_id)
             current_tile = np.rot90(current_tile)
     edge_count = defaultdict(int)
-    for side, tile_ids in edge_lookup.items():
-        if len(tile_ids) == 1:
-            edge_count[tile_ids[0]] += 1
+    # Edges are a unique side that are only found on one tile
+    for id_list in edge_lookup.values():
+        if len(id_list) == 1:
+            edge_count[id_list[0]] += 1
+    # Corners have two unique sides (four if flipped)
     corners = [num for num in edge_count.keys() if edge_count[num] == 4]
     edges = [num for num in edge_count.keys() if num not in corners]
     return corners, edges
