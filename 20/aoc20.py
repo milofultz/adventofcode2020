@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from copy import deepcopy
 import numpy as np
 
@@ -38,23 +38,30 @@ def make_edge_lookup(tileset: dict) -> dict:
     return edge_lookup
 
 
-def get_organized_ids(edges: dict, all_ids: list) -> (list, list):
+def get_edge_list_and_organized_ids(edges: dict, all_ids: list) -> (list, dict):
     edge_count = defaultdict(int)
     # Edges are a unique side that are only found on one tile
-    for id_list in edges.values():
+    edge_list = list()
+    for edge, id_list in edges.items():
         if len(id_list) == 1:
             edge_count[id_list[0]] += 1
+            edge_list.append(edge)
     # Corners have two unique sides (four if flipped)
-    edge_ids = [num for num in edge_count.keys() if edge_count[num] == 2]
-    corner_ids = [num for num in edge_count.keys() if edge_count[num] > 2]
-    inside_ids = [num for num in all_ids if num not in sum([corner_ids, edge_ids], [])]
-    return corner_ids, edge_ids, inside_ids
+    edge_ids = deque([num for num in edge_count.keys() if edge_count[num] == 2])
+    corner_ids = deque([num for num in edge_count.keys() if edge_count[num] > 2])
+    inside_ids = deque([num for num in all_ids if num not in sum([corner_ids, edge_ids], [])])
+    organized_ids = {
+        "corners": corner_ids,
+        "edges": edge_ids,
+        "insides": inside_ids
+    }
+    return edge_list, organized_ids
 
 
 if __name__ == "__main__":
     # Part 1
     tileset = parse_data(P_IN)
     edge_lookup = make_edge_lookup(tileset)
-    corners, edges, insides = get_organized_ids(edge_lookup, tileset.keys())
-    print(np.product(corners))
+    outside_edges, organized_ids = get_edge_list_and_organized_ids(edge_lookup, tileset.keys())
+    print(np.product(organized_ids["corners"]))
     # Part 2
