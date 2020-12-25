@@ -59,7 +59,7 @@ def get_edge_list_and_organized_ids(edges: dict, all_ids: list) -> (list, dict):
     return edge_list, organized_ids
 
 
-def assemble_tiles(tiles: dict, edges: list, organized_ids: dict) -> np.array:
+def order_all_tiles(tiles: dict, edges: list, organized_ids: dict) -> np.array:
     macro_side_length = int(sqrt(len(tiles)))
     assembled = make_empty_list(macro_side_length)
     available_tiles = deepcopy(organized_ids)
@@ -149,12 +149,39 @@ def trim_all_tiles(tiles: list) -> list:
     return trimmed_tiles
 
 
+def merge_tiles(tiles: list) -> np.array:
+    # make copy of tiles
+    tiles = deepcopy(tiles)
+    # create empty list as all_merged_rows
+    all_merged_rows = list()
+    # for each row of tiles
+    for row in tiles:
+        # create copy of first element in row as merged_row
+        merged_row = row[0]
+        # for each tile in row after the first
+        for tile in row[1:]:
+            # concatenate the two along axis 1
+            merged_row = np.concatenate((merged_row, tile), axis=1)
+        # add the merged_row to the all_merged_rows list
+        all_merged_rows.append(merged_row)
+    # create merged_tiles array out of first element in all_merged_rows
+    merged_tiles = all_merged_rows[0]
+    # for each row in rows after the first
+    for row in all_merged_rows[1:]:
+        # concatenate merged_tiles with current row along axis 0
+        merged_tiles = np.concatenate((merged_tiles, row), axis=0)
+    # return merged_tiles
+    return merged_tiles
+
+
 if __name__ == "__main__":
     # Part 1
-    tileset = parse_data(P_INS)
+    tileset = parse_data(P_IN)
     edge_lookup = make_edge_lookup(tileset)
     outside_edges, organized_ids = get_edge_list_and_organized_ids(edge_lookup, tileset.keys())
     print(np.product(organized_ids["corners"]))
     # Part 2
-    assembled_tiles = assemble_tiles(tileset, outside_edges, organized_ids)
-    borderless_tiles = trim_all_tiles(assembled_tiles)
+    ordered_tiles = order_all_tiles(tileset, outside_edges, organized_ids)
+    borderless_tiles = trim_all_tiles(ordered_tiles)
+    assembled_image = merge_tiles(borderless_tiles)
+    print(assembled_image)
