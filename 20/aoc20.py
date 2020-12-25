@@ -150,27 +150,16 @@ def trim_all_tiles(tiles: list) -> list:
 
 
 def merge_tiles(tiles: list) -> np.array:
-    # make copy of tiles
     tiles = deepcopy(tiles)
-    # create empty list as all_merged_rows
     all_merged_rows = list()
-    # for each row of tiles
     for row in tiles:
-        # create copy of first element in row as merged_row
         merged_row = row[0]
-        # for each tile in row after the first
         for tile in row[1:]:
-            # concatenate the two along axis 1
             merged_row = np.concatenate((merged_row, tile), axis=1)
-        # add the merged_row to the all_merged_rows list
         all_merged_rows.append(merged_row)
-    # create merged_tiles array out of first element in all_merged_rows
     merged_tiles = all_merged_rows[0]
-    # for each row in rows after the first
     for row in all_merged_rows[1:]:
-        # concatenate merged_tiles with current row along axis 0
         merged_tiles = np.concatenate((merged_tiles, row), axis=0)
-    # return merged_tiles
     return merged_tiles
 
 
