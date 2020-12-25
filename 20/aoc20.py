@@ -38,24 +38,23 @@ def make_edge_lookup(tileset: dict) -> dict:
     return edge_lookup
 
 
-def get_corner_and_edge_ids(edges: dict) -> (list, list):
+def get_organized_ids(edges: dict, all_ids: list) -> (list, list):
     edge_count = defaultdict(int)
     # Edges are a unique side that are only found on one tile
     for id_list in edges.values():
         if len(id_list) == 1:
             edge_count[id_list[0]] += 1
     # Corners have two unique sides (four if flipped)
-    edge_ids = [num for num in edge_count.keys() if edge_count[num] >= 2]
-    corner_ids = [num for num in edge_ids if edge_count[num] > 2]
-    return corner_ids, edge_ids
+    edge_ids = [num for num in edge_count.keys() if edge_count[num] == 2]
+    corner_ids = [num for num in edge_count.keys() if edge_count[num] > 2]
+    inside_ids = [num for num in all_ids if num not in sum([corner_ids, edge_ids], [])]
+    return corner_ids, edge_ids, inside_ids
 
 
 if __name__ == "__main__":
     # Part 1
     tileset = parse_data(P_IN)
     edge_lookup = make_edge_lookup(tileset)
-    corner_ids, edge_ids = get_corner_and_edge_ids(edge_lookup)
-    print(np.product(corner_ids))
+    corners, edges, insides = get_organized_ids(edge_lookup, tileset.keys())
+    print(np.product(corners))
     # Part 2
-    inside_ids = [num for num in tileset.keys()
-                  if num not in sum([corner_ids, edge_ids], [])]
