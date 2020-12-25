@@ -135,11 +135,26 @@ def make_search_parameters(x: int, y: int, length: int) -> dict:
         return search
 
 
+def trim_all_tiles(tiles: list) -> list:
+    side_length = len(tiles[0])
+    trimmed_tiles = deepcopy(tiles)
+    for y in range(side_length):
+        for x in range(side_length):
+            trimmed_element = deepcopy(trimmed_tiles[y][x])
+            trimmed_element = np.delete(trimmed_element, 0, 0)
+            trimmed_element = np.delete(trimmed_element, 0, 1)
+            trimmed_element = np.delete(trimmed_element, -1, 0)
+            trimmed_element = np.delete(trimmed_element, -1, 1)
+            trimmed_tiles[y][x] = trimmed_element
+    return trimmed_tiles
+
+
 if __name__ == "__main__":
     # Part 1
-    tileset = parse_data(P_IN)
+    tileset = parse_data(P_INS)
     edge_lookup = make_edge_lookup(tileset)
     outside_edges, organized_ids = get_edge_list_and_organized_ids(edge_lookup, tileset.keys())
     print(np.product(organized_ids["corners"]))
     # Part 2
-    complete_picture = assemble_tiles(tileset, outside_edges, organized_ids)
+    assembled_tiles = assemble_tiles(tileset, outside_edges, organized_ids)
+    borderless_tiles = trim_all_tiles(assembled_tiles)
