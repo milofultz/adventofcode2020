@@ -1,5 +1,6 @@
 from collections import defaultdict, deque
 from copy import deepcopy
+from math import sqrt
 import numpy as np
 
 
@@ -49,13 +50,89 @@ def get_edge_list_and_organized_ids(edges: dict, all_ids: list) -> (list, dict):
     # Corners have two unique sides (four if flipped)
     edge_ids = deque([num for num in edge_count.keys() if edge_count[num] == 2])
     corner_ids = deque([num for num in edge_count.keys() if edge_count[num] > 2])
-    inside_ids = deque([num for num in all_ids if num not in sum([corner_ids, edge_ids], [])])
+    inside_ids = deque([num for num in all_ids if num not in corner_ids and num not in edge_ids])
     organized_ids = {
         "corners": corner_ids,
         "edges": edge_ids,
         "insides": inside_ids
     }
     return edge_list, organized_ids
+
+
+def assemble_tiles(tiles: dict, edges: list, organized_ids: dict) -> np.array:
+    macro_side_length = int(sqrt(len(tiles)))
+    assembled = make_empty_list(macro_side_length)
+    available_tiles = deepcopy(organized_ids)
+    for y in range(len(assembled)):
+        for x in range(len(assembled[y])):
+            search = make_search_parameters(x, y, macro_side_length)
+            tile_group = deepcopy(available_tiles[search["pool"]])
+            adjacent_edges = {
+                "top": ("" if search["top"] == "edge" else
+                        "".join(str(char) for char in assembled[y-1][x][9])),
+                "left": ("" if search["left"] == "edge" else
+                         "".join(str(line[9]) for line in assembled[y][x-1]))
+            }
+            found = False
+            while not found:
+                current_tile = tiles[tile_group[0]]
+                current_id = tile_group.popleft()
+                for i in range(8):
+                    if i % 4 == 0:
+                        current_tile = np.flip(current_tile, 1)
+                    current_tile = np.rot90(current_tile)
+                    current_edges = {
+                        "top": "".join(str(char) for char in current_tile[0, 0:]),
+                        "bottom": "".join(str(char) for char in current_tile[9, 0:]),
+                        "left": "".join(str(char) for char in current_tile[0:, 0]),
+                        "right": "".join(str(char) for char in current_tile[0:, 9]),
+                    }
+                    if search["top"] == "edge" and current_edges["top"] not in edges:
+                        continue
+                    elif search["top"] == "inside" and current_edges["top"] != adjacent_edges["top"]:
+                        continue
+                    if search["bottom"] == "edge" and current_edges["bottom"] not in edges:
+                        continue
+                    if search["left"] == "edge" and current_edges["left"] not in edges:
+                        continue
+                    elif search["left"] == "inside" and current_edges["left"] != adjacent_edges["left"]:
+                        continue
+                    if search["right"] == "edge" and current_edges["right"] not in edges:
+                        continue
+                    found = True
+                    break
+            assembled[y][x] = current_tile
+            available_tiles[search["pool"]].remove(current_id)
+    return assembled
+
+
+def make_empty_list(length: int) -> list:
+    output = list()
+    for i in range(length):
+        output.append(list())
+        for j in range(length):
+            output[i].append(None)
+    return output
+
+def make_search_parameters(x: int, y: int, length: int) -> dict:
+        search = dict()
+        edge_count = 0
+        search["left"] = "inside"
+        search["top"] = "inside"
+        if x == 0 or x == length - 1:
+            search["left" if x == 0 else "right"] = "edge"
+            edge_count += 1
+        if y == 0 or y == length - 1:
+            search["top" if y == 0 else "bottom"] = "edge"
+            edge_count += 1
+        if edge_count != 0:
+            search["pool"] = "corners" if edge_count == 2 else "edges"
+        else:
+            search["pool"] = "insides"
+        for side in ["top", "bottom", "left", "right"]:
+            if side not in search:
+                search[side] = None
+        return search
 
 
 if __name__ == "__main__":
@@ -65,3 +142,4 @@ if __name__ == "__main__":
     outside_edges, organized_ids = get_edge_list_and_organized_ids(edge_lookup, tileset.keys())
     print(np.product(organized_ids["corners"]))
     # Part 2
+    complete_picture = assemble_tiles(tileset, outside_edges, organized_ids)
