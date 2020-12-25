@@ -51,3 +51,6 @@ if __name__ == "__main__":
     tileset = parse_data(P_IN)
     corner_ids, edge_ids = get_corners_and_edges(tileset)
     print(np.product(corner_ids))
+    # Part 2
+    inside_ids = [num for num in tileset.keys()
+                  if num not in sum([corner_ids, edge_ids], [])]
