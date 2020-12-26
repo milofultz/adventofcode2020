@@ -6,6 +6,7 @@ import numpy as np
 
 P_IN = "aoc20-data"
 P_INS = "aoc20-data-small"
+P_SM = "aoc20-sea-monster"
 
 
 def parse_data(fp: str) -> dict:
@@ -163,6 +164,58 @@ def merge_tiles(tiles: list) -> np.array:
     return merged_tiles
 
 
+def get_water_roughness(image: list) -> int:
+    sea_monster, sm_length, sm_height, sm_hashes = get_monster_info()
+    # create copy of image
+    image = deepcopy(image)
+    # set most found to 0
+    most_monsters_found = 0
+    # Do 8x
+    for i in range(8):
+        # if this is turn 4 or 8
+        if i % 4 == 0:
+            # flip the image
+            image = np.flip(image, 1)
+        # rotate the array by 90°
+        image = np.rot90(image)
+        # set sea monsters found to 0
+        monsters_found = 0
+        # for each row (y) in the image
+        for y in range(0, len(image) - sm_height):
+            # for each element (x) from 0 to (image length - sm_length)
+            for x in range(0, len(image[0]) - sm_length):
+                found = True
+                # for each coordinate in sea monster
+                for coordinate in sea_monster:
+                    # if (coordinate x + x, coordinate y + y) in image is not a hash
+                    if image[x + coordinate[0], y + coordinate[1]] != "#":
+                        # break
+                        found = False
+                        break
+                # sea monsters found += 1
+                monsters_found += 1 if found else 0
+        # if sea monsters found is bigger than most found
+        if monsters_found > most_monsters_found:
+            # update most found to sea monsters found's value
+            most_monsters_found = monsters_found
+    # get number of hashes in image (np.count_nonzero(image == '#'))
+    total_hashes = np.count_nonzero(image == '#')
+    # return total number of hashes less (most found * sm_hashes)
+    return total_hashes - (most_monsters_found * sm_hashes)
+
+
+
+def get_monster_info() -> (list, int, int):
+    with open(P_SM, 'r') as f:
+        data = f.read().split("\n")
+    monster_coords = list()
+    for y, line in enumerate(data):
+        for x, char in enumerate(line):
+            if char == "#":
+                monster_coords.append((x, y))
+    return monster_coords, len(data[0]), len(data), len(monster_coords)
+
+
 if __name__ == "__main__":
     # Part 1
     tileset = parse_data(P_IN)
@@ -173,4 +226,4 @@ if __name__ == "__main__":
     ordered_tiles = order_all_tiles(tileset, outside_edges, organized_ids)
     borderless_tiles = trim_all_tiles(ordered_tiles)
     assembled_image = merge_tiles(borderless_tiles)
-    print(assembled_image)
+    print(get_water_roughness(assembled_image))
