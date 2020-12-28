@@ -30,34 +30,34 @@ def find_allergen_free_ingredients(food_list: list, locations: dict) -> list:
     while not free_of_allergens:
         free_of_allergens = True
         allergen_locations = deepcopy(locations["allergens"])
-        for allergen, a_locations in allergen_locations.items():
-            ing_count = defaultdict(int)
-            for loc in a_locations:
-                for ing in food_list[loc]["ingredients"]:
-                    ing_count[ing] += 1
-            if len(a_locations) in ing_count.values():
+        for allergen, allergen_locations in allergen_locations.items():
+            ingredient_count = defaultdict(int)
+            for index in allergen_locations:
+                for ingredient in food_list[index]["ingredients"]:
+                    ingredient_count[ingredient] += 1
+            if len(allergen_locations) in ingredient_count.values():
                 free_of_allergens = False
-                keys = list(ing_count.keys())
-                vals = list(ing_count.values())
-                alrg_ing = keys[vals.index(len(a_locations))]
-                for loc in locations["ingredients"][alrg_ing]:
-                    i = food_list[loc]["ingredients"].index(alrg_ing)
-                    del food_list[loc]["ingredients"][i]
-                for loc in locations["allergens"][allergen]:
-                    i = food_list[loc]["allergens"].index(allergen)
-                    del food_list[loc]["allergens"][i]
+                names = list(ingredient_count.keys())
+                counts = list(ingredient_count.values())
+                found_ingredient = names[counts.index(len(allergen_locations))]
+                for index in locations["ingredients"][found_ingredient]:
+                    x = food_list[index]["ingredients"].index(found_ingredient)
+                    del food_list[index]["ingredients"][x]
+                for index in locations["allergens"][allergen]:
+                    x = food_list[index]["allergens"].index(allergen)
+                    del food_list[index]["allergens"][x]
                 del locations["allergens"][allergen]
-                del locations["ingredients"][alrg_ing]
+                del locations["ingredients"][found_ingredient]
         for food in food_list:
             if len(food["ingredients"]) == 1 and len(food["allergens"]) == 1:
                 free_of_allergens = False
-                alrg_ing = food["ingredients"][0]
+                found_ingredient = food["ingredients"][0]
                 allergen = food["allergens"][0]
-                for _ in deepcopy(food_list):
-                    food["ingredients"].pop(alrg_ing, None)
-                    food["allergens"].pop(allergen, None)
+                food["ingredients"].pop(found_ingredient, None)
+                food["allergens"].pop(allergen, None)
                 del locations["allergens"][allergen]
-                del locations["ingredients"][alrg_ing]
+                del locations["ingredients"][found_ingredient]
+
     return [ing for food in food_list for ing in food["ingredients"]]
 
 
