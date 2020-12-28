@@ -43,3 +43,6 @@ Of the ingredients containing no allergens, how many times do those ingredients 
     * add this entry dict to the output list
 * return list and locations
 
+### Find ingredients without allergens
+
+### Find number of occurrences of those allergens in original food list
