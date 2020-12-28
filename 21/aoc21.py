@@ -1,6 +1,7 @@
 from collections import defaultdict
 from copy import deepcopy
 
+
 P_IN = "aoc21-data"
 P_INS = "aoc21-data-small"
 
@@ -24,9 +25,10 @@ def parse_data(fp) -> (list, dict):
     return food_list, locations
 
 
-def find_allergen_free_ingredients(food_list: list, locations: dict) -> list:
+def categorize_ingredients(food_list: list, locations: dict) -> (list, list):
     food_list = deepcopy(food_list)
     free_of_allergens = False
+    dangerous = dict()
     while not free_of_allergens:
         free_of_allergens = True
         allergen_locations = deepcopy(locations["allergens"])
@@ -40,6 +42,7 @@ def find_allergen_free_ingredients(food_list: list, locations: dict) -> list:
                 names = list(ingredient_count.keys())
                 counts = list(ingredient_count.values())
                 found_ingredient = names[counts.index(len(allergen_locations))]
+                dangerous[allergen] = found_ingredient
                 for index in locations["ingredients"][found_ingredient]:
                     x = food_list[index]["ingredients"].index(found_ingredient)
                     del food_list[index]["ingredients"][x]
@@ -57,11 +60,12 @@ def find_allergen_free_ingredients(food_list: list, locations: dict) -> list:
                 food["allergens"].pop(allergen, None)
                 del locations["allergens"][allergen]
                 del locations["ingredients"][found_ingredient]
-
-    return [ing for food in food_list for ing in food["ingredients"]]
+    no_allergens = [ing for food in food_list for ing in food["ingredients"]]
+    return no_allergens, dangerous
 
 
 if __name__ == "__main__":
     food_list, locations = parse_data(P_IN)
-    allergen_free = find_allergen_free_ingredients(food_list, locations)
+    allergen_free, dangerous = categorize_ingredients(food_list, locations)
     print(len(allergen_free))
+    print(",".join(x[1] for x in sorted(dangerous.items(), key=lambda x: x[0])))
