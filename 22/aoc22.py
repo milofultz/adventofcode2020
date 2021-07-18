@@ -15,9 +15,13 @@ def get_decks():
     return deck_1, deck_2
 
 
-def combat(deck_1, deck_2, recursive=False):
+def combat(deck_1, deck_2, recursive=False, sub_game=False):
     """ Play the game and return winner plus their score """
     history = []
+
+    if sub_game and max(deck_1) > max(deck_2) and max(deck_1) > (len(deck_1) + len(deck_2)):
+        return 1, []
+
     while len(deck_1) > 0 and len(deck_2) > 0:
         if has_been_played(deck_1, history):
             return 1, deck_1
@@ -29,7 +33,7 @@ def combat(deck_1, deck_2, recursive=False):
             new_deck_1 = deck_1[:card_1]
             new_deck_2 = deck_2[:card_2]
 
-            winner, _ = combat(new_deck_1, new_deck_2, recursive=True)
+            winner, _ = combat(new_deck_1, new_deck_2, recursive=True, sub_game=True)
             if winner == 1:
                 deck_1.append(card_1)
                 deck_1.append(card_2)
