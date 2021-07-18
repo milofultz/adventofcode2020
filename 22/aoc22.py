@@ -1,5 +1,6 @@
 from collections import deque
 from copy import deepcopy
+from time import time
 
 P_IN = './aoc22-data'
 P_INS = './aoc22-data-small'
@@ -10,8 +11,7 @@ def get_decks():
     with open(P_IN, 'r') as f:
         raw_decks = f.read()
 
-    raw_decks = raw_decks.replace('Player 1:\n', '')
-    deck_1, deck_2 = raw_decks.split('\n\nPlayer 2:\n')
+    deck_1, deck_2 = raw_decks.replace('Player 1:\n', '').split('\n\nPlayer 2:\n')
     deck_1 = [int(x) for x in deck_1.split('\n') if x != '']
     deck_2 = [int(x) for x in deck_2.split('\n') if x != '']
     return deque(deck_1), deque(deck_2)
@@ -21,9 +21,9 @@ def combat(deck_1, deck_2, recursive=False):
     """ Play the game and return winner plus their deck """
     history = []
     while len(deck_1) > 0 and len(deck_2) > 0:
-        if has_been_played(deck_1, deck_2, history):
+        if has_been_played(deck_1, history):
             return 1, deck_1
-        history.append([deepcopy(deck_1), deepcopy(deck_2)])
+        history.append(deepcopy(deck_1))
         card_1 = deck_1.popleft()
         card_2 = deck_2.popleft()
 
@@ -54,10 +54,10 @@ def combat(deck_1, deck_2, recursive=False):
     return winner, winning_deck
 
 
-def has_been_played(deck_1, deck_2, history):
+def has_been_played(deck_1, history):
     """ Check if the current hand has been played """
     for record in history:
-        if record[0] == deck_1 and record[1] == deck_2:
+        if record == deck_1:
             return True
     return False
 
@@ -85,5 +85,9 @@ def problem_2():
 
 
 if __name__ == "__main__":
+    start_1 = time()
     problem_1()
+    print(time() - start_1)
+    start_2 = time()
     problem_2()
+    print(time() - start_2)
