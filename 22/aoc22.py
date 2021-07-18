@@ -17,15 +17,15 @@ def get_decks():
 
 def combat(deck_1, deck_2, recursive=False, sub_game=False):
     """ Play the game and return winner plus their score """
-    history = []
+    history = set()
 
     if sub_game and max(deck_1) > max(deck_2) and max(deck_1) > (len(deck_1) + len(deck_2)):
         return 1, []
 
     while len(deck_1) > 0 and len(deck_2) > 0:
-        if has_been_played(deck_1, history):
+        if tuple(deck_1) in history:
             return 1, deck_1
-        history.append(deck_1[:])
+        history.add(tuple(deck_1))
         card_1 = deck_1.pop(0)
         card_2 = deck_2.pop(0)
 
@@ -56,20 +56,13 @@ def combat(deck_1, deck_2, recursive=False, sub_game=False):
     return winner, get_score(winning_deck)
 
 
-def has_been_played(deck_1, history):
-    """ Check if the current hand has been played """
-    for record in history:
-        if record == deck_1:
-            return True
-    return False
-
-
 def get_score(deck):
     """ Get the winner's deck score """
     total_score = 0
     while len(deck) != 0:
+        multiplier = len(deck)
         top_card = deck.pop(0)
-        total_score += top_card * (len(deck) + 1)
+        total_score += top_card * multiplier
 
     return total_score
 
